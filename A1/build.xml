@@ -18,93 +18,94 @@
 -->
 <project name="ece454750s15a1" default="ece454750s15a1" basedir=".">
 
-  <description>ece454750s15a1</description>
+	<description>ece454750s15a1</description>
 
-  <property name="src" location="src" />
-  <property name="gen" location="gen-java" />
-  <property name="build" location="build" />
+	<property name="src" location="src" />
+	<property name="gen" location="gen-java" />
+	<property name="build" location="build" />
 
-  <path id="libs.classpath">
-	<!--
-	<fileset dir="../../lib/java/build">
-      <include name="*.jar" />
-      <exclude name="-test.jar" />
-    </fileset>
-    <fileset dir="../../lib/java/build/lib">
-      <include name="*.jar" />
-    </fileset>
-	-->
-    <fileset dir="./libs">
-      <include name="*.jar" />
-    </fileset>
-  </path>
-  <path id="build.classpath">
-    <path refid="libs.classpath" />
-    <pathelement path="${gen}" />
-  </path>
-  <path id="ece454750s15a1.classpath">
-    <path refid="build.classpath" />
-    <pathelement path="${build}" />
-    <pathelement path="ece454750s15a1.jar" />
-  </path>
-  
-  <target name="init">
-    <tstamp />
-    <mkdir dir="${build}"/>
-    <mkdir dir="${build}/log"/>
-  </target>
+	<path id="libs.classpath">
+		<!--
+		<fileset dir="../../lib/java/build">
+		<include name="*.jar" />
+		<exclude name="-test.jar" />
+		</fileset>
+		<fileset dir="../../lib/java/build/lib">
+		<include name="*.jar" />
+		</fileset>
+		-->
+		<fileset dir="./libs">
+		<include name="*.jar" />
+		</fileset>
+	</path>
+	<path id="build.classpath">
+		<path refid="libs.classpath" />
+		<pathelement path="${gen}" />
+	</path>
+	<path id="ece454750s15a1.classpath">
+		<path refid="build.classpath" />
+		<pathelement path="${build}" />
+		<pathelement path="ece454750s15a1.jar" />
+	</path>
 
-  <target name="compile" depends="init, generate">
-    <javac source="1.6" target="1.6" srcdir="${gen}" destdir="${build}" classpathref="libs.classpath" />
-    <javac source="1.6" target="1.6" srcdir="${src}" destdir="${build}" classpathref="build.classpath" />
-  </target>
+	<target name="init">
+		<tstamp />
+		<mkdir dir="${build}"/>
+		<mkdir dir="${build}/log"/>
+	</target>
 
-  <!--<target name="test" depends="Assignment1" />-->
+	<target name="compile" depends="init, generate">
+		<javac source="1.6" target="1.6" srcdir="${gen}" destdir="${build}" classpathref="libs.classpath" />
+		<javac source="1.6" target="1.6" srcdir="${src}" destdir="${build}" classpathref="build.classpath" />
+	</target>
 
-  <!-- target name="ece454750s15a1" description="Run the Assignment1" -->
-  <target name="ece454750s15a1" description="ece454750s15a1" depends="compile" >
-    <jar jarfile="ece454750s15a1.jar" basedir="${build}"/>
-    <parallel>
-      <java classname="BEServer" fork="true" timeout="10000"
-        classpathref="ece454750s15a1.classpath" failonerror="false" output="${build}/log/BEServer.log">
-      </java>
-      <sequential>
-        <sleep seconds="2"/>
-        <echo>Assignment1 client simple:</echo>
-        <java classname="FEServer"
-          classpathref="ece454750s15a1.classpath" failonerror="true">
-          <arg line="simple"/>
-        </java>
-      </sequential>
-    </parallel>
-  </target>
+	<!--<target name="test" depends="Assignment1" />-->
 
-  <target name="generate">
-    <!-- Generate the thrift gen-java source -->
-    <!-- exec executable="../../compiler/cpp/thrift" failonerror="true" -->
-    <exec executable="/usr/bin/thrift" failonerror="true" >
-      <arg line="--gen java -r ece454750s15a1.thrift"/>
-    </exec>
-  </target>
+	<!-- target name="ece454750s15a1" description="Run the Assignment1" -->
+	<target name="ece454750s15a1" description="ece454750s15a1" depends="compile" >
+		<jar jarfile="ece454750s15a1.jar" basedir="${build}"/>
+		<parallel>
+			<java classname="BEServer" fork="true" timeout="10000"
+				classpathref="ece454750s15a1.classpath" failonerror="false" output="${build}/log/BEServer.log">
+			</java>
+			<sequential>
+				<sleep seconds="2"/>
+				<echo>Assignment1 client simple:</echo>
+				<java classname="FEServer"
+					classpathref="ece454750s15a1.classpath" failonerror="true">
+					<arg line="simple"/>
+				</java>
+			</sequential>
+		</parallel>
+	</target>
 
-  <target name="FEServer" description="Run a FE server" >
-    <echo>FE server simple:</echo>
-    <java classname="FEServer"
-      classpathref="ece454750s15a1.classpath" failonerror="true">
-      <arg line="simple eceubuntu"/>
-    </java>
-  </target>
+	<target name="generate">
+		<!-- Generate the thrift gen-java source -->
+		<!-- exec executable="../../compiler/cpp/thrift" failonerror="true" -->
+		<exec executable="/usr/bin/thrift" failonerror="true" >
+			<arg line="--gen java -r ece454750s15a1.thrift"/>
+		</exec>
+	</target>
 
-  <target name="BEServer" description="Run a BE server" depends="compile">
-      <java classname="BEServer" fork="true"
-        classpathref="ece454750s15a1.classpath" failonerror="false" output="${build}/log/BEServer.log">
-      </java>
-  </target>
+	<target name="FEServer" description="Run a FE server" >
+		<echo>FE server simple:</echo>
+		<java classname="FEServer"
+			classpathref="ece454750s15a1.classpath" failonerror="true">
+			<!--<arg line="simple eceubuntu"/>-->
+			<arg line="-host ecelinux1 -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:39771,ecelinux2:49771,ecelinux3:59771"/>
+		</java>
+	</target>
 
-  <target name="clean">
-    <delete dir="${build}" />
-    <delete dir="${gen}"/>
-    <delete file="ece454750s15a1.jar" />
-  </target>
+	<target name="BEServer" description="Run a BE server" depends="compile">
+		<java classname="BEServer" fork="true"
+			classpathref="ece454750s15a1.classpath" failonerror="false" output="${build}/log/BEServer.log">
+		</java>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${gen}"/>
+		<delete file="ece454750s15a1.jar" />
+	</target>
 
 </project>
