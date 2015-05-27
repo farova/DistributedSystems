@@ -28,9 +28,6 @@
 		<fileset dir="../lib/">
 			<include name="*.jar" />
 		</fileset>
-		<fileset dir="/usr/bin/thrift">
-			<include name="*.jar" />
-		</fileset>
 	</path>
 	<path id="build.classpath">
 		<path refid="libs.classpath" />
