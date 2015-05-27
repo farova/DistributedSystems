@@ -50,21 +50,27 @@
 		<javac source="1.6" target="1.6" srcdir="${src}" destdir="${build}" classpathref="build.classpath" />
 	</target>
 
-	<!--<target name="test" depends="Assignment1" />-->
-
-	<!-- target name="ece454750s15a1" description="Run the Assignment1" -->
 	<target name="ece454750s15a1" description="ece454750s15a1" depends="compile" >
 		<jar jarfile="ece454750s15a1.jar" basedir="${build}"/>
 		<parallel>
 			<java classname="BEServer" fork="true" timeout="10000"
 				classpathref="ece454750s15a1.classpath" failonerror="false" output="${build}/log/BEServer.log">
+				<arg line="-host ecelinux1 -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:29771,ecelinux1:39771,ecelinux1:49771"/>
 			</java>
 			<sequential>
+				<!--
 				<sleep seconds="2"/>
-				<echo>Assignment1 client simple:</echo>
+				<echo>Starting up FE node:</echo>
 				<java classname="FEServer"
 					classpathref="ece454750s15a1.classpath" failonerror="true">
-					<arg line="simple"/>
+					<arg line="-host ecelinux1 -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:29771,ecelinux1:39771,ecelinux1:49771"/>
+				</java>
+				-->
+				<sleep seconds="2"/>
+				<echo>Starting up TestClient node:</echo>
+				<java classname="TestClient"
+					classpathref="ece454750s15a1.classpath" failonerror="true">
+					<arg line="-host ecelinux1 -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:29771,ecelinux1:39771,ecelinux1:49771"/>
 				</java>
 			</sequential>
 		</parallel>

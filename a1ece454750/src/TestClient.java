@@ -28,7 +28,7 @@ import org.apache.thrift.transport.TSSLTransportFactory.TSSLTransportParameters;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 
-public class FEServer {
+public class TestClient {
 	public static void main(String [] args) {
 
 		// 1st args is "simple", 2nd args is server address
@@ -39,7 +39,7 @@ public class FEServer {
 
 		try {
 			TTransport transport;
-			transport = new TSocket(args[1], 9771);
+			transport = new TSocket("eceubuntu.uwaterloo.ca", 9771);
 			transport.open();
 
 			TProtocol protocol = new  TBinaryProtocol(transport);
@@ -59,7 +59,7 @@ public class FEServer {
 		
 		String password = "test";
 		
-		String hash = passClient.hashPassword(password, (short)20);
+		String hash = passClient.hashPassword(password, (short)10);
 		
 		System.out.println("Password: " + password + " Hash: " + hash);
 		

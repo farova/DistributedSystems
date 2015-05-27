@@ -27,13 +27,13 @@ import ece454750s15a1.*;
 import java.util.List;
 import java.util.Arrays;
 
-public class A1ManagementHandler implements A1Management.Iface {
+public class FEManagementHandler implements A1Management.Iface {
 	
 	PerfCounters m_counters;
 	
 	private long m_startTime;
 	
-	public A1ManagementHandler() {
+	public FEManagementHandler() {
 		m_counters = new PerfCounters();
 		
 		m_counters.numSecondsUp = 0;

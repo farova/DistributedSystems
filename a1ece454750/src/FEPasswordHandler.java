@@ -27,9 +27,9 @@ import ece454750s15a1.*;
 import java.util.List;
 import java.util.Arrays;
 
-public class A1PasswordHandler implements A1Password.Iface {
+public class FEPasswordHandler implements A1Password.Iface {
 	
-	public A1PasswordHandler() {}
+	public FEPasswordHandler() {}
 
 	@Override
 	public String hashPassword(String password, short logRounds) {
