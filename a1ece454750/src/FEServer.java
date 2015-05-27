@@ -20,6 +20,8 @@
 // Generated code
 import ece454750s15a1.*;
 
+import org.apache.commons.cli.CommandLine;
+
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.TSSLTransportFactory;
 import org.apache.thrift.transport.TTransport;
@@ -32,10 +34,10 @@ public class FEServer {
 	public static void main(String [] args) {
 
 		// 1st args is "simple", 2nd args is server address
-		if (args.length != 2 || !args[0].contains("simple")) {
+		/*if (args.length != 2 || !args[0].contains("simple")) {
 			System.out.println("Please enter 'simple' ");
 			System.exit(0);
-		}
+		}*/
 
 		try {
 			TTransport transport;
@@ -43,9 +45,9 @@ public class FEServer {
 			transport.open();
 
 			TProtocol protocol = new  TBinaryProtocol(transport);
-			A1Password.Client client = new A1Password.Client(protocol);
+			A1Password.Client passClient = new A1Password.Client(protocol);
 
-			perform(client);
+			perform(passClient);
 
 			transport.close();
 		} catch (TException x) {
@@ -53,8 +55,18 @@ public class FEServer {
 		} 
 	}
 
-	private static void perform(A1Password.Client client) throws TException
+	private static void perform(A1Password.Client passClient) throws TException
 	{
+		
+		
+		String password = "test";
+		
+		String hash = passClient.hashPassword(password, 20);
+		
+		System.out.println("Password: " + password + " Hash: " + hash);
+		
+	
+	
 	
 		/*
 		int sum = client.add(2,7);
