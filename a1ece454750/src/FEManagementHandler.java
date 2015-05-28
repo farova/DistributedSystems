@@ -1,7 +1,7 @@
 
-import org.apache.thrift.TException;
+package ece454750s15a1;
 
-import ece454750s15a1.*;
+import org.apache.thrift.TException;
 
 import java.util.List;
 import java.util.Arrays;

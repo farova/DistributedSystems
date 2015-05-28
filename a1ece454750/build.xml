@@ -28,8 +28,8 @@
 	</target>
 
 	<target name="compile" depends="init, generate">
-		<javac source="1.6" target="1.6" srcdir="${gen}" destdir="${build}" classpathref="libs.classpath" />
-		<javac source="1.6" target="1.6" srcdir="${src}" destdir="${build}" classpathref="build.classpath" />
+		<javac source="1.6" target="1.6" srcdir="${gen}" destdir="${build}" classpathref="libs.classpath" includeantruntime="false"/>
+		<javac source="1.6" target="1.6" srcdir="${src}" destdir="${build}" classpathref="build.classpath" includeantruntime="false"/>
 	</target>
 
 	<target name="ece454750s15a1" description="ece454750s15a1" depends="compile" >
@@ -70,21 +70,21 @@
 		<echo>Starting up TestClient node:</echo>
 		<java classname="TestClient"
 			classpathref="ece454750s15a1.classpath" failonerror="true">
-			<arg line="-host ecelinux1 -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:29771,ecelinux1:39771,ecelinux1:49771"/>
+			<arg line="-host eceubuntu -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:29771,ecelinux1:39771,ecelinux1:49771"/>
 		</java>
 	</target>
 
 	<target name="FEServer" description="Run a FEServer" >
 		<echo>Starting up FE node:</echo>
 		<java classname="FEServer" classpathref="ece454750s15a1.classpath" failonerror="true">
-			<arg line="-host ecelinux1 -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:29771,ecelinux1:39771,ecelinux1:49771"/>
+			<arg line="-host eceubuntu -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:29771,ecelinux1:39771,ecelinux1:49771"/>
 		</java>
 	</target>
 
 	<target name="BEServer" description="Run a BEServer">
 		<echo>Starting up BE node:</echo>
 		<java classname="BEServer" fork="true" classpathref="ece454750s15a1.classpath" failonerror="false">
-			<arg line="-host ecelinux1 -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:29771,ecelinux1:39771,ecelinux1:49771"/>
+			<arg line="-host eceubuntu -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:29771,ecelinux1:39771,ecelinux1:49771"/>
 		</java>
 	</target>
 

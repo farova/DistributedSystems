@@ -1,5 +1,5 @@
 
-import ece454750s15a1.*;
+package ece454750s15a1;
 
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.TSSLTransportFactory;

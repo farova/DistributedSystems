@@ -1,5 +1,5 @@
 
-import ece454750s15a1.*;
+package ece454750s15a1;
 
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.TSSLTransportFactory;
@@ -20,7 +20,7 @@ public class FEServer {
 
 		try {
 			TTransport transport;
-			transport = new TSocket(args[1], 9771);
+			transport = new TSocket("eceubuntu.uwaterloo.ca", 9771);
 			transport.open();
 
 			TProtocol protocol = new  TBinaryProtocol(transport);
@@ -40,7 +40,7 @@ public class FEServer {
 		
 		String password = "test";
 		
-		String hash = passClient.hashPassword(password, (short)20);
+		String hash = passClient.hashPassword(password, (short)10);
 		
 		System.out.println("Password: " + password + " Hash: " + hash);
 		

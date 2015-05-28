@@ -1,6 +1,7 @@
 
+package ece454750s15a1;
+
 import org.mindrot.jbcrypt.BCrypt;
-import ece454750s15a1.*;
 
 public class BEPasswordHandler implements A1Password.Iface {
 	
