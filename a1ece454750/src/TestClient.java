@@ -36,13 +36,14 @@ public class TestClient {
 
 	private static void perform(A1Password.Client passClient) throws TException
 	{
-		
-		
 		String password = "test";
 		
+		System.out.println("Doing forward hash: ");
 		String hash = passClient.hashPassword(password, (short)10);
-		
 		System.out.println("Password: " + password + " Hash: " + hash);
 		
+		System.out.println("Doing backwards hash: ");
+		boolean correctPass = passClient.checkPassword(password, hash);
+		System.out.println("Is password correct: " + correctPass);
 	}
 }
