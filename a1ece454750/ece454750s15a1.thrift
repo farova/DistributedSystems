@@ -10,6 +10,13 @@ struct PerfCounters {
 	3: i32 numRequestsCompleted		// total number of requests completed by service handler
 }
 
+struct JoinRequest {
+	1: string host,
+	2: i32 pport,
+	3: i32 mport,
+	4: i16 ncores
+}
+
 service A1Password {
 
 	string hashPassword (

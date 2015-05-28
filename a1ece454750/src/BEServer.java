@@ -12,13 +12,13 @@ import ece454750s15a1.*;
 
 public class BEServer {
 
-  public static A1PasswordHandler handler;
+  public static BEPasswordHandler handler;
 
   public static A1Password.Processor processor;
 
   public static void main(String [] args) {
     try {
-      handler = new A1PasswordHandler();
+      handler = new BEPasswordHandler();
       processor = new A1Password.Processor(handler);
 
       Runnable simple = new Runnable() {
