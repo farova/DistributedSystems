@@ -32,8 +32,8 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinRequest._Fields>, java.io.Serializable, Cloneable, Comparable<JoinRequest> {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("JoinRequest");
+public class JoinRequestData implements org.apache.thrift.TBase<JoinRequestData, JoinRequestData._Fields>, java.io.Serializable, Cloneable, Comparable<JoinRequestData> {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("JoinRequestData");
 
   private static final org.apache.thrift.protocol.TField HOST_FIELD_DESC = new org.apache.thrift.protocol.TField("host", org.apache.thrift.protocol.TType.STRING, (short)1);
   private static final org.apache.thrift.protocol.TField PPORT_FIELD_DESC = new org.apache.thrift.protocol.TField("pport", org.apache.thrift.protocol.TType.I32, (short)2);
@@ -42,8 +42,8 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new JoinRequestStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new JoinRequestTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new JoinRequestDataStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new JoinRequestDataTupleSchemeFactory());
   }
 
   public String host; // required
@@ -135,13 +135,13 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
     tmpMap.put(_Fields.NCORES, new org.apache.thrift.meta_data.FieldMetaData("ncores", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I16)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(JoinRequest.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(JoinRequestData.class, metaDataMap);
   }
 
-  public JoinRequest() {
+  public JoinRequestData() {
   }
 
-  public JoinRequest(
+  public JoinRequestData(
     String host,
     int pport,
     int mport,
@@ -160,7 +160,7 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public JoinRequest(JoinRequest other) {
+  public JoinRequestData(JoinRequestData other) {
     __isset_bitfield = other.__isset_bitfield;
     if (other.isSetHost()) {
       this.host = other.host;
@@ -170,8 +170,8 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
     this.ncores = other.ncores;
   }
 
-  public JoinRequest deepCopy() {
-    return new JoinRequest(this);
+  public JoinRequestData deepCopy() {
+    return new JoinRequestData(this);
   }
 
   @Override
@@ -189,7 +189,7 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
     return this.host;
   }
 
-  public JoinRequest setHost(String host) {
+  public JoinRequestData setHost(String host) {
     this.host = host;
     return this;
   }
@@ -213,7 +213,7 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
     return this.pport;
   }
 
-  public JoinRequest setPport(int pport) {
+  public JoinRequestData setPport(int pport) {
     this.pport = pport;
     setPportIsSet(true);
     return this;
@@ -236,7 +236,7 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
     return this.mport;
   }
 
-  public JoinRequest setMport(int mport) {
+  public JoinRequestData setMport(int mport) {
     this.mport = mport;
     setMportIsSet(true);
     return this;
@@ -259,7 +259,7 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
     return this.ncores;
   }
 
-  public JoinRequest setNcores(short ncores) {
+  public JoinRequestData setNcores(short ncores) {
     this.ncores = ncores;
     setNcoresIsSet(true);
     return this;
@@ -356,12 +356,12 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof JoinRequest)
-      return this.equals((JoinRequest)that);
+    if (that instanceof JoinRequestData)
+      return this.equals((JoinRequestData)that);
     return false;
   }
 
-  public boolean equals(JoinRequest that) {
+  public boolean equals(JoinRequestData that) {
     if (that == null)
       return false;
 
@@ -410,7 +410,7 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
   }
 
   @Override
-  public int compareTo(JoinRequest other) {
+  public int compareTo(JoinRequestData other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
@@ -474,7 +474,7 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("JoinRequest(");
+    StringBuilder sb = new StringBuilder("JoinRequestData(");
     boolean first = true;
 
     sb.append("host:");
@@ -523,15 +523,15 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
     }
   }
 
-  private static class JoinRequestStandardSchemeFactory implements SchemeFactory {
-    public JoinRequestStandardScheme getScheme() {
-      return new JoinRequestStandardScheme();
+  private static class JoinRequestDataStandardSchemeFactory implements SchemeFactory {
+    public JoinRequestDataStandardScheme getScheme() {
+      return new JoinRequestDataStandardScheme();
     }
   }
 
-  private static class JoinRequestStandardScheme extends StandardScheme<JoinRequest> {
+  private static class JoinRequestDataStandardScheme extends StandardScheme<JoinRequestData> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, JoinRequest struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, JoinRequestData struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -584,7 +584,7 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, JoinRequest struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, JoinRequestData struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -608,16 +608,16 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
 
   }
 
-  private static class JoinRequestTupleSchemeFactory implements SchemeFactory {
-    public JoinRequestTupleScheme getScheme() {
-      return new JoinRequestTupleScheme();
+  private static class JoinRequestDataTupleSchemeFactory implements SchemeFactory {
+    public JoinRequestDataTupleScheme getScheme() {
+      return new JoinRequestDataTupleScheme();
     }
   }
 
-  private static class JoinRequestTupleScheme extends TupleScheme<JoinRequest> {
+  private static class JoinRequestDataTupleScheme extends TupleScheme<JoinRequestData> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, JoinRequest struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, JoinRequestData struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
       if (struct.isSetHost()) {
@@ -648,7 +648,7 @@ public class JoinRequest implements org.apache.thrift.TBase<JoinRequest, JoinReq
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, JoinRequest struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, JoinRequestData struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(4);
       if (incoming.get(0)) {

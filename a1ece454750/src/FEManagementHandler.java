@@ -5,15 +5,12 @@ import ece454750s15a1.*;
 
 import java.util.List;
 import java.util.Arrays;
-import java.util.concurrent;
+import java.util.concurrent.*;
 
 public class FEManagementHandler implements A1Management.Iface {
 	
+	//CopyOnWriteArrayList<>
 	
-
-
-
-
 	PerfCounters m_counters;
 	
 	private long m_startTime;
@@ -41,7 +38,17 @@ public class FEManagementHandler implements A1Management.Iface {
 	public List<String> getGroupMembers() throws TException {
 		return Arrays.asList("mfarova", "n9krishn");
 	}
-
+	
+	@Override
+	public void joinRequest(JoinRequestData data) { 
+		
+	}
+	
+	@Override
+	public void joinAck(JoinAckData data) {
+		
+	}
+	
 }
 
 

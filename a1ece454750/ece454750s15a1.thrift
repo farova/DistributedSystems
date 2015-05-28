@@ -10,11 +10,15 @@ struct PerfCounters {
 	3: i32 numRequestsCompleted		// total number of requests completed by service handler
 }
 
-struct JoinRequest {
+struct JoinRequestData {
 	1: string host,
 	2: i32 pport,
 	3: i32 mport,
 	4: i16 ncores
+}
+
+struct JoinAckData {
+	1: bool isAcked
 }
 
 service A1Password {
@@ -39,5 +43,9 @@ service A1Management {
 
 	list<string> getGroupMembers ()
 
+	void joinRequest(1: JoinRequestData data)
+	
+	void joinAck(1: JoinAckData data)
+	
 }
 

@@ -34,20 +34,21 @@
 
 	<target name="ece454750s15a1" description="ece454750s15a1" depends="compile" >
 		<jar jarfile="ece454750s15a1.jar" basedir="${build}"/>
+		<!--
 		<parallel>
 			<java classname="BEServer" fork="true" timeout="10000"
 				classpathref="ece454750s15a1.classpath" failonerror="false" output="${build}/log/BEServer.log">
 				<arg line="-host ecelinux1 -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:29771,ecelinux1:39771,ecelinux1:49771"/>
 			</java>
-			<sequential>
-				<!--
+	ant		<sequential>
+			
 				<sleep seconds="2"/>
 				<echo>Starting up FE node:</echo>
 				<java classname="FEServer"
 					classpathref="ece454750s15a1.classpath" failonerror="true">
 					<arg line="-host ecelinux1 -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:29771,ecelinux1:39771,ecelinux1:49771"/>
 				</java>
-				-->
+				
 				<sleep seconds="2"/>
 				<echo>Starting up TestClient node:</echo>
 				<java classname="TestClient"
@@ -56,28 +57,34 @@
 				</java>
 			</sequential>
 		</parallel>
+		-->
 	</target>
 
 	<target name="generate">
-		<!-- Generate the thrift gen-java source -->
-		<!-- exec executable="../../compiler/cpp/thrift" failonerror="true" -->
 		<exec executable="/usr/bin/thrift" failonerror="true" >
 			<arg line="--gen java -r ece454750s15a1.thrift"/>
 		</exec>
 	</target>
 
-	<target name="FEServer" description="Run a FE server" >
-		<echo>FE server simple:</echo>
-		<java classname="FEServer"
+	<target name="TestClient" description="Run the TestClient" >
+		<echo>Starting up TestClient node:</echo>
+		<java classname="TestClient"
 			classpathref="ece454750s15a1.classpath" failonerror="true">
-			<!--<arg line="simple eceubuntu"/>-->
-			<arg line="-host ecelinux1 -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:39771,ecelinux2:49771,ecelinux3:59771"/>
+			<arg line="-host ecelinux1 -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:29771,ecelinux1:39771,ecelinux1:49771"/>
 		</java>
 	</target>
 
-	<target name="BEServer" description="Run a BE server" depends="compile">
-		<java classname="BEServer" fork="true"
-			classpathref="ece454750s15a1.classpath" failonerror="false" output="${build}/log/BEServer.log">
+	<target name="FEServer" description="Run a FEServer" >
+		<echo>Starting up FE node:</echo>
+		<java classname="FEServer" classpathref="ece454750s15a1.classpath" failonerror="true">
+			<arg line="-host ecelinux1 -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:29771,ecelinux1:39771,ecelinux1:49771"/>
+		</java>
+	</target>
+
+	<target name="BEServer" description="Run a BEServer">
+		<echo>Starting up BE node:</echo>
+		<java classname="BEServer" fork="true" classpathref="ece454750s15a1.classpath" failonerror="false" <!--output="${build}/log/BEServer.log"-->>
+			<arg line="-host ecelinux1 -pport 19771 -mport 29771 -ncores 2 -seeds ecelinux1:29771,ecelinux1:39771,ecelinux1:49771"/>
 		</java>
 	</target>
 

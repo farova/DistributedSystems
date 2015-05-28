@@ -36,6 +36,16 @@ public class BEManagementHandler implements A1Management.Iface {
 		return Arrays.asList("mfarova", "n9krishn");
 	}
 
+	@Override
+	public void joinRequest(JoinRequestData data) { 
+		
+	}
+	
+	@Override
+	public void joinAck(JoinAckData data) {
+		
+	}
+	
 }
 
 
