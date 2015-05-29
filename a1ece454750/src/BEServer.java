@@ -4,45 +4,76 @@ package ece454750s15a1;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TServer.Args;
 import org.apache.thrift.server.TSimpleServer;
-import org.apache.thrift.server.TThreadPoolServer;
-import org.apache.thrift.transport.TSSLTransportFactory;
 import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TServerTransport;
-import org.apache.thrift.transport.TSSLTransportFactory.TSSLTransportParameters;
 
-public class BEServer {
+public class BEServer extends Server{
 
-  public static BEPasswordHandler handler;
+	public static BEPasswordHandler m_passwordHandler;
+	public static A1Password.Processor m_passwordProcessor;
+	
+	public static BEManagementHandler m_managementHandler;
+	public static A1Management.Processor m_managementProcessor;
 
-  public static A1Password.Processor processor;
+	public static void main(String [] args) {
+		parseArgs(args);
+	
+		try {
+			m_passwordHandler = new BEPasswordHandler();
+			m_passwordProcessor = new A1Password.Processor(m_passwordHandler);
 
-  public static void main(String [] args) {
-    try {
-      handler = new BEPasswordHandler();
-      processor = new A1Password.Processor(handler);
+			m_managementHandler = new BEManagementHandler();
+			m_managementProcessor = new A1Management.Processor(m_managementHandler);
 
-      Runnable simple = new Runnable() {
-        public void run() {
-          simple(processor);
-        }
-      };      
+			new Thread(getPasswordRunnable()).start();
+			new Thread(getManagementRunnable()).start();
+			
+		} catch (Exception x) {
+			x.printStackTrace();
+		}
+	}
 
-      new Thread(simple).start();
-    } catch (Exception x) {
-      x.printStackTrace();
-    }
-  }
+	private static Runnable getPasswordRunnable() {
+		return new Runnable() {
+			public void run() {
+				runPasswordService(m_passwordProcessor);
+			}
+		}; 
+	}
 
-  public static void simple(A1Password.Processor processor) {
-    try {
-      TServerTransport serverTransport = new TServerSocket(9771);
-      TServer server = new TSimpleServer(
-              new Args(serverTransport).processor(processor));
+	private static Runnable getManagementRunnable() {
+		return new Runnable() {
+			public void run() {
+				runManagementService(m_managementProcessor);
+			}
+		}; 
+	}
 
-      System.out.println("Starting the simple server...");
-      server.serve();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
+	public static void runPasswordService(A1Password.Processor processor) {
+		try {
+			TServerTransport serverTransport = new TServerSocket(m_pPort);
+			TServer server = new TSimpleServer(
+				new Args(serverTransport).processor(processor)
+			);
+
+			System.out.println("Starting the PasswordService");
+			server.serve();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void runManagementService(A1Management.Processor processor) {
+		try {
+			TServerTransport serverTransport = new TServerSocket(m_mPort);
+			TServer server = new TSimpleServer(
+				new Args(serverTransport).processor(processor)
+			);
+
+			System.out.println("Starting the ManagementService");
+			server.serve();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
