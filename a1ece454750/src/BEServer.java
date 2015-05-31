@@ -26,11 +26,11 @@ public class BEServer extends Server{
 		m_managementHandler = new BEManagementHandler();
 		m_managementProcessor = new A1Management.Processor(m_managementHandler);
 		
-		while(!m_managementHandler.isAcked()) {
-			joinFESeed();
-		}
-		
 		startServiceThreads();
+		
+		//while(!m_managementHandler.isAcked()) {
+			joinFESeed();
+		//}
 	}
 	
 	private static void joinFESeed() {
@@ -54,7 +54,10 @@ public class BEServer extends Server{
 			A1Management.Client FEmanagement = new A1Management.Client(protocol);
 
 			// Try join server
+			
+			print("Sending request to FE node to " + seed.m_host + ":" + seed.m_port);
 			FEmanagement.joinRequest(request);
+			//Thread.sleep(5); 
 
 			transport.close();
 		} catch (TException x) {

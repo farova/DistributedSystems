@@ -45,21 +45,21 @@
 	<target name="TestClient" description="Run the TestClient" >
 		<echo>Starting up TestClient node:</echo>
 		<java classname="ece454750s15a1.TestClient" classpathref="ece454750s15a1.classpath" failonerror="true">
-			<arg line="-host eceubuntu -pport 19771 -mport 29771 -ncores 2 -seeds eceubuntu:29771,eceubuntu:39771,eceubuntu:49771"/>
+			<arg line="-d -host eceubuntu -seeds eceubuntu:19771"/>
 		</java>
 	</target>
 
 	<target name="FEServer" description="Run a FEServer" >
 		<echo>Starting up FE node:</echo>
 		<java classname="ece454750s15a1.FEServer" fork="true" classpathref="ece454750s15a1.classpath" failonerror="true">
-			<arg line="-host eceubuntu -pport 19771 -mport 29771 -ncores 2 -seeds eceubuntu:29771,eceubuntu:39771,eceubuntu:49771"/>
+			<arg line="-d -host eceubuntu -pport 19770 -mport 19771 -ncores 2 -seeds eceubuntu:19771"/>
 		</java>
 	</target>
 
 	<target name="BEServer" description="Run a BEServer">
 		<echo>Starting up BE node:</echo>
 		<java classname="ece454750s15a1.BEServer" fork="true" classpathref="ece454750s15a1.classpath" failonerror="false">
-			<arg line="-host eceubuntu -pport 19771 -mport 29771 -ncores 2 -seeds eceubuntu:29771,eceubuntu:39771,eceubuntu:49771"/>
+			<arg line="-d -host eceubuntu -pport 29770 -mport 29771 -ncores 2 -seeds eceubuntu:19771"/>
 		</java>
 	</target>
 

@@ -6,16 +6,26 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class FEPasswordHandler implements A1Password.Iface {
 	
-	public FEPasswordHandler() {}
+	public FEPasswordHandler() {
+	}
 
 	@Override
 	public String hashPassword(String password, short logRounds) {
-		return BCrypt.hashpw(password, BCrypt.gensalt(logRounds));
+	
+		FEServer.print("FE hashPasword");
+	
+		return "";
+	
 	}
 
 	@Override
 	public boolean checkPassword(String password, String hash) {
-		return BCrypt.checkpw(password, hash);
+	
+	
+		FEServer.print("FE checkPassword");
+	
+		return false;
+	
 	}
 
 }

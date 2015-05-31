@@ -24,6 +24,7 @@ public class Server {
 	protected static int m_pPort;
 	protected static int m_mPort;
 	protected static short m_nCores;
+	protected static boolean m_debug;
 	
 	protected static List<Seed> m_seedList;
 	
@@ -31,6 +32,7 @@ public class Server {
 	
 	protected static void parseArgs(String [] args) {
 	
+		m_debug = false;
 		m_seedList = new ArrayList<Seed>();
 	
 		try {
@@ -57,18 +59,20 @@ public class Server {
 							)
 						);
 					}
+				} else if (args[i].equals("-d")) {
+					m_debug = true;
 				}
 			}
 		} catch (Exception x) {
 			x.printStackTrace();
 		}
 		
-		/*System.out.println(	
+		print(	
 			"m_host: " + m_host + 
 			" m_pPort: " + m_pPort + 
 			" m_mPort: " + m_mPort + 
 			" m_nCores: " + m_nCores				
-		);*/
+		);
 	}
 	
 	protected static void startServiceThreads() {
@@ -103,7 +107,7 @@ public class Server {
 				new Args(serverTransport).processor(processor)
 			);
 
-			System.out.println("Starting the PasswordService");
+			print("Starting the PasswordService");
 			server.serve();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -117,10 +121,16 @@ public class Server {
 				new Args(serverTransport).processor(processor)
 			);
 
-			System.out.println("Starting the ManagementService");
+			print("Starting the ManagementService");
 			server.serve();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public static void print(String msg) {
+		if(m_debug) {
+			System.out.println(msg);
 		}
 	}
 }

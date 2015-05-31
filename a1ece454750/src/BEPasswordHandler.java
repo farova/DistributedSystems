@@ -5,7 +5,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class BEPasswordHandler implements A1Password.Iface {
 	
-	public BEPasswordHandler() {}
+	public BEPasswordHandler() {
+	}
 
 	@Override
 	public String hashPassword(String password, short logRounds) {
