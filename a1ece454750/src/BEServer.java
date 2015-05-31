@@ -28,9 +28,10 @@ public class BEServer extends Server{
 		
 		startServiceThreads();
 		
-		//while(!m_managementHandler.isAcked()) {
+		while(!m_managementHandler.isAcked()) {
 			joinFESeed();
-		//}
+			//Thread.sleep(5); 
+		}
 	}
 	
 	private static void joinFESeed() {
@@ -57,7 +58,6 @@ public class BEServer extends Server{
 			
 			print("Sending request to FE node to " + seed.m_host + ":" + seed.m_port);
 			FEmanagement.joinRequest(request);
-			//Thread.sleep(5); 
 
 			transport.close();
 		} catch (TException x) {
