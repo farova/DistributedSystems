@@ -9,6 +9,7 @@ public class BEManagementHandler implements A1Management.Iface {
 	
 	PerfCounters m_counters;
 	
+	private boolean m_isAcked;
 	private long m_startTime;
 	
 	public BEManagementHandler() {
@@ -43,6 +44,10 @@ public class BEManagementHandler implements A1Management.Iface {
 	@Override
 	public void joinAck(JoinAckData data) {
 		
+	}
+	
+	public boolean isAcked() {
+		return m_isAcked;
 	}
 	
 }

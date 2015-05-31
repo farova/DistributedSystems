@@ -5,7 +5,7 @@ import org.apache.thrift.TException;
 
 import java.util.List;
 import java.util.Arrays;
-import java.util.concurrent.*;
+//import java.util.concurrent.*;
 
 public class FEManagementHandler implements A1Management.Iface {
 	
@@ -41,7 +41,12 @@ public class FEManagementHandler implements A1Management.Iface {
 	
 	@Override
 	public void joinRequest(JoinRequestData data) { 
+
 		
+		System.out.println("Request!");
+		//System.out.println("Host: " + data.m_host);
+	
+	
 	}
 	
 	@Override
