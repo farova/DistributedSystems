@@ -26,14 +26,14 @@ public class Server {
 	protected static short m_nCores;
 	protected static boolean m_debug;
 	
-	protected static List<Seed> m_seedList;
+	protected static List<Node> m_seedList;
 	
-	protected static String m_hostURL = ".uwaterloo.ca";
+	protected static final String m_hostURL = ".uwaterloo.ca";
 	
 	protected static void parseArgs(String [] args) {
 	
 		m_debug = false;
-		m_seedList = new ArrayList<Seed>();
+		m_seedList = new ArrayList<Node>();
 	
 		try {
 			for(int i = 0; i < args.length; i++) {
@@ -53,8 +53,8 @@ public class Server {
 						String[] seedData = seedDataString.split(":");
 						
 						m_seedList.add(
-							new Seed(
-								seedData[0] + m_hostURL, 
+							new Node(
+								seedData[0] + m_hostURL,
 								Integer.parseInt( seedData[1])
 							)
 						);
@@ -69,8 +69,8 @@ public class Server {
 		
 		print(	
 			"m_host: " + m_host + 
-			" m_pPort: " + m_pPort + 
 			" m_mPort: " + m_mPort + 
+			" m_pPort: " + m_pPort + 
 			" m_nCores: " + m_nCores				
 		);
 	}

@@ -1,14 +1,11 @@
 
 package ece454750s15a1;
 
+import java.util.Random;
+
 import org.apache.thrift.TException;
-import org.apache.thrift.server.TServer;
-import org.apache.thrift.server.TServer.Args;
-import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TSocket;
-import org.apache.thrift.transport.TServerSocket;
-import org.apache.thrift.transport.TServerTransport;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 
@@ -30,7 +27,6 @@ public class BEServer extends Server{
 		
 		while(!m_managementHandler.isAcked()) {
 			joinFESeed();
-			//Thread.sleep(5); 
 		}
 	}
 	
@@ -45,18 +41,18 @@ public class BEServer extends Server{
 			request.ncores = m_nCores;
 			
 			//Get random Seed to join
-			Seed seed = m_seedList.get(0);
+			Random randomizer = new Random();
+			Node seed = m_seedList.get(randomizer.nextInt(m_seedList.size()));
 		
 			TTransport transport;
-			transport = new TSocket(seed.m_host, seed.m_port);
+			transport = new TSocket(seed.m_host, seed.m_mport);
 			transport.open();
 
 			TProtocol protocol = new  TBinaryProtocol(transport);
 			A1Management.Client FEmanagement = new A1Management.Client(protocol);
 
 			// Try join server
-			
-			print("Sending request to FE node to " + seed.m_host + ":" + seed.m_port);
+			print("Sending request to FE node to " + seed.m_host + ":" + seed.m_mport);
 			FEmanagement.joinRequest(request);
 
 			transport.close();

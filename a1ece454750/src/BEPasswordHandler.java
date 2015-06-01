@@ -10,11 +10,17 @@ public class BEPasswordHandler implements A1Password.Iface {
 
 	@Override
 	public String hashPassword(String password, short logRounds) {
+	
+		BEServer.print("BE hashPassword");
+	
 		return BCrypt.hashpw(password, BCrypt.gensalt(logRounds));
 	}
 
 	@Override
 	public boolean checkPassword(String password, String hash) {
+	
+		BEServer.print("BE checkPassword");
+		
 		return BCrypt.checkpw(password, hash);
 	}
 

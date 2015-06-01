@@ -7,20 +7,23 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 
-
+import java.util.Iterator;
 import java.util.List;
 import java.util.Arrays;
-//import java.util.concurrent.*;
+import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class FEManagementHandler implements A1Management.Iface {
 	
-	//CopyOnWriteArrayList<>
+	private CopyOnWriteArrayList<Node> m_FEnodesList;
 	
-	PerfCounters m_counters;
+	private PerfCounters m_counters;
 	
 	private long m_startTime;
 	
 	public FEManagementHandler() {
+		
+		m_FEnodesList = new CopyOnWriteArrayList<Node>();
 		
 		m_counters = new PerfCounters();
 		
@@ -49,12 +52,40 @@ public class FEManagementHandler implements A1Management.Iface {
 	public void joinRequest(JoinRequestData data) { 
 		FEServer.print("Request from " + data.host + ":" + data.mport);
 		
+		m_FEnodesList.add(new Node(data.host, data.pport, data.mport, data.ncores));
+		
 		sendJoinAck(data.host, data.mport);
+		
+		printFEnodesList();
 	}
 	
 	@Override
 	public void joinAck(JoinAckData data) {
 		
+	}
+	
+	public Node getBestBE() {
+	
+	
+	
+	
+	
+	
+	
+	
+		//Get random Seed to join
+		Random randomizer = new Random();
+		return m_FEnodesList.get(randomizer.nextInt(m_FEnodesList.size()));
+	}
+	
+	public void printFEnodesList() {
+		FEServer.print("Current BE nodes connected:");
+	
+		Iterator<Node> iterator = m_FEnodesList.iterator(); 
+		while (iterator.hasNext()) {
+			Node data = iterator.next();
+			FEServer.print("- " + data.m_host + ":" + data.m_pport);
+		}
 	}
 	
 	private void sendJoinAck(String host, int port) {
@@ -74,10 +105,6 @@ public class FEManagementHandler implements A1Management.Iface {
 			BEmanagement.joinAck(data);
 
 			transport.close();
-		} catch (org.apache.thrift.transport.TTransportException x) {
-			x.printStackTrace();
-			
-			FEServer.print("Type: " + x.getType() );
 		} catch (TException x) {
 			x.printStackTrace();
 		}
