@@ -66,16 +66,34 @@ public class FEManagementHandler implements A1Management.Iface {
 	
 	public Node getBestBE() {
 	
-	
-	
-	
-	
-	
-	
-	
-		//Get random Seed to join
+		// Get total weight
+		int totalWeight = 0;
+		Iterator<Node> iterator = m_FEnodesList.iterator(); 
+		while (iterator.hasNext()) {
+			Node data = iterator.next();
+			totalWeight += data.m_ncores;
+		}
+		
+		// Choose random node based on nCores
 		Random randomizer = new Random();
-		return m_FEnodesList.get(randomizer.nextInt(m_FEnodesList.size()));
+		int weight = (int)randomizer.nextInt(totalWeight + 1);
+		
+		FEServer.print("Total weight: " + totalWeight + " Random num: " + weight);
+		
+		iterator = m_FEnodesList.iterator(); 
+		while (iterator.hasNext()) {
+			Node data = iterator.next();
+			weight -= data.m_ncores;
+			
+			FEServer.print(data.m_host+":" + data.m_pport + " Current weight: " + weight);
+			
+			if(weight <= 0) {
+				return data;
+			}
+		}
+		
+		FEServer.print("This shouldn't happen!");
+		return m_FEnodesList.get(0);
 	}
 	
 	public void printFEnodesList() {
