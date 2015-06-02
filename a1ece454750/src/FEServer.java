@@ -17,8 +17,23 @@ public class FEServer extends Server {
 
 		startServiceThreads();
 		
-		while(!m_managementHandler.isAcked()) {
-			joinFESeed(false);
+		
+		for(int i = 0; i < getNumSeeds(); i++) {
+			if(!m_managementHandler.isAcked()) {
+				Node seed = m_seedList.get(i);
+				
+				if(seed.m_host != m_host && seed.m_mport != m_mport) {
+					joinFESeed(false, seed);
+				}
+			} else {
+				break;
+			}
 		}
+		
+		if(!m_managementHandler.isAcked()) {
+			print("FE node not ACKed! Was it the first node up?");
+		}
+		
+		
 	}
 }

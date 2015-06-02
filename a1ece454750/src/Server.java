@@ -31,6 +31,10 @@ public class Server {
 	
 	protected static final String m_hostURL = ".uwaterloo.ca";
 	
+	protected static int getNumSeeds() {
+		return m_seedList.size();
+	}
+	
 	protected static void parseArgs(String [] args) {
 	
 		m_debug = false;
@@ -135,7 +139,17 @@ public class Server {
 		}
 	}
 	
+	
 	protected static void joinFESeed(boolean isBE) {
+		//Get random Seed to join
+		Random randomizer = new Random();
+		Node seed = m_seedList.get(randomizer.nextInt(m_seedList.size()));
+		
+		joinFESeed(isBE, seed);
+	}
+	
+	
+	protected static void joinFESeed(boolean isBE, Node seed) {
 		try {
 			
 			//Generate join request data
@@ -146,10 +160,6 @@ public class Server {
 			request.ncores = m_ncores;
 			request.isBE = isBE;
 			
-			//Get random Seed to join
-			Random randomizer = new Random();
-			Node seed = m_seedList.get(randomizer.nextInt(m_seedList.size()));
-		
 			TTransport transport;
 			transport = new TSocket(seed.m_host, seed.m_mport);
 			transport.open();
