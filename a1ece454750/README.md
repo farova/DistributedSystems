@@ -14,4 +14,4 @@ TODO:
 - FE nodes check all seeds and if nothing up determines tat they are sole FE node
 - Gossip protocol
 - Dont print stack traces
-- 
+- Report
