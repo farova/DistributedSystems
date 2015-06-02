@@ -1,14 +1,6 @@
 
 package ece454750s15a1;
 
-import java.util.Random;
-
-import org.apache.thrift.TException;
-import org.apache.thrift.transport.TTransport;
-import org.apache.thrift.transport.TSocket;
-import org.apache.thrift.protocol.TBinaryProtocol;
-import org.apache.thrift.protocol.TProtocol;
-
 public class BEServer extends Server{
 
 	public static BEPasswordHandler m_passwordHandler;
@@ -26,38 +18,7 @@ public class BEServer extends Server{
 		startServiceThreads();
 		
 		while(!m_managementHandler.isAcked()) {
-			joinFESeed();
+			joinFESeed(true);
 		}
-	}
-	
-	private static void joinFESeed() {
-		try {
-			
-			//Generate join request data
-			JoinRequestData request = new JoinRequestData();
-			request.host = m_host;
-			request.pport = m_pPort;
-			request.mport = m_mPort;
-			request.ncores = m_nCores;
-			
-			//Get random Seed to join
-			Random randomizer = new Random();
-			Node seed = m_seedList.get(randomizer.nextInt(m_seedList.size()));
-		
-			TTransport transport;
-			transport = new TSocket(seed.m_host, seed.m_mport);
-			transport.open();
-
-			TProtocol protocol = new  TBinaryProtocol(transport);
-			A1Management.Client FEmanagement = new A1Management.Client(protocol);
-
-			// Try join server
-			print("Sending request to FE node to " + seed.m_host + ":" + seed.m_mport);
-			FEmanagement.joinRequest(request);
-
-			transport.close();
-		} catch (TException x) {
-			x.printStackTrace();
-		} 
 	}
 }

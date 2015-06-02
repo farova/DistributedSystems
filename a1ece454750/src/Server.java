@@ -14,6 +14,7 @@ import org.apache.thrift.protocol.TProtocol;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 	
 public class Server {
 	
@@ -21,9 +22,9 @@ public class Server {
 	protected static A1Management.Processor m_managementProcessor;
 	
 	protected static String m_host;
-	protected static int m_pPort;
-	protected static int m_mPort;
-	protected static short m_nCores;
+	protected static int m_pport;
+	protected static int m_mport;
+	protected static short m_ncores;
 	protected static boolean m_debug;
 	
 	protected static List<Node> m_seedList;
@@ -40,11 +41,11 @@ public class Server {
 				if(args[i].equals("-host")) {
 					m_host = args[i+1] + m_hostURL;
 				} else if (args[i].equals("-pport")) {
-					m_pPort = Integer.parseInt( args[i+1] );
+					m_pport = Integer.parseInt( args[i+1] );
 				} else if (args[i].equals("-mport")) {
-					m_mPort = Integer.parseInt( args[i+1] );
+					m_mport = Integer.parseInt( args[i+1] );
 				} else if (args[i].equals("-ncores")) {
-					m_nCores = Short.parseShort( args[i+1] );
+					m_ncores = Short.parseShort( args[i+1] );
 				} else if (args[i].equals("-seeds")) {
 				
 					String[] seedList = args[i+1].split(",");
@@ -69,9 +70,9 @@ public class Server {
 		
 		print(	
 			"m_host: " + m_host + 
-			" m_mPort: " + m_mPort + 
-			" m_pPort: " + m_pPort + 
-			" m_nCores: " + m_nCores				
+			" m_mport: " + m_mport + 
+			" m_pport: " + m_pport + 
+			" m_ncores: " + m_ncores				
 		);
 	}
 	
@@ -102,7 +103,7 @@ public class Server {
 
 	private static void runPasswordService(A1Password.Processor processor) {
 		try {
-			TServerTransport serverTransport = new TServerSocket(m_pPort);
+			TServerTransport serverTransport = new TServerSocket(m_pport);
 			TServer server = new TSimpleServer(
 				new Args(serverTransport).processor(processor)
 			);
@@ -116,7 +117,7 @@ public class Server {
 
 	private static void runManagementService(A1Management.Processor processor) {
 		try {
-			TServerTransport serverTransport = new TServerSocket(m_mPort);
+			TServerTransport serverTransport = new TServerSocket(m_mport);
 			TServer server = new TSimpleServer(
 				new Args(serverTransport).processor(processor)
 			);
@@ -132,5 +133,37 @@ public class Server {
 		if(m_debug) {
 			System.out.println(msg);
 		}
+	}
+	
+	protected static void joinFESeed(boolean isBE) {
+		try {
+			
+			//Generate join request data
+			JoinRequestData request = new JoinRequestData();
+			request.host = m_host;
+			request.pport = m_pport;
+			request.mport = m_mport;
+			request.ncores = m_ncores;
+			request.isBE = isBE;
+			
+			//Get random Seed to join
+			Random randomizer = new Random();
+			Node seed = m_seedList.get(randomizer.nextInt(m_seedList.size()));
+		
+			TTransport transport;
+			transport = new TSocket(seed.m_host, seed.m_mport);
+			transport.open();
+
+			TProtocol protocol = new  TBinaryProtocol(transport);
+			A1Management.Client FEmanagement = new A1Management.Client(protocol);
+
+			// Try join server
+			print("Sending request to FE node to " + seed.m_host + ":" + seed.m_mport);
+			FEmanagement.joinRequest(request);
+
+			transport.close();
+		} catch (TException x) {
+			x.printStackTrace();
+		} 
 	}
 }
