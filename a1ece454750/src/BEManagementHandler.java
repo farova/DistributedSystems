@@ -5,31 +5,21 @@ import org.apache.thrift.TException;
 import java.util.List;
 import java.util.Arrays;
 
-public class BEManagementHandler implements A1Management.Iface {
+public class BEManagementHandler extends ManagementHandler implements A1Management.Iface {
 	
-	PerfCounters m_counters;
-	
-	private boolean m_isAcked;
-	private long m_startTime;
-	
-	public BEManagementHandler() {
-	
-		m_counters = new PerfCounters();
-		
-		m_counters.numSecondsUp = 0;
-		m_counters.numRequestsReceived = 0;
-		m_counters.numRequestsCompleted = 0;
-		
-		m_startTime = System.nanoTime();
-	}
+	public BEManagementHandler() {}
 
 	@Override
 	public PerfCounters getPerfCounters() {
-		// Calculate current uptime
-		long elapsedTime = System.nanoTime() - m_startTime;
-		m_counters.numSecondsUp = (int)(elapsedTime / 1E9);
+		PerfCounters counters = new PerfCounters();
 		
-		return m_counters;
+		counters.numSecondsUp = getSecondsUp();
+		
+		
+		counters.numRequestsReceived = 0;
+		counters.numRequestsCompleted = 0;
+		
+		return counters;
 	}
 
 	@Override
@@ -47,11 +37,6 @@ public class BEManagementHandler implements A1Management.Iface {
 		BEServer.print("ACKED!");
 		m_isAcked = data.isAcked;
 	}
-	
-	public boolean isAcked() {
-		return m_isAcked;
-	}
-	
 }
 
 

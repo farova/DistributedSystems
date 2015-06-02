@@ -14,7 +14,8 @@ struct JoinRequestData {
 	1: string host,
 	2: i32 pport,
 	3: i32 mport,
-	4: i16 ncores
+	4: i16 ncores,
+	5: bool isBE = true;
 }
 
 struct JoinAckData {

@@ -13,34 +13,29 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class FEManagementHandler implements A1Management.Iface {
+public class FEManagementHandler extends ManagementHandler implements A1Management.Iface {
 	
 	private CopyOnWriteArrayList<Node> m_FEnodesList;
-	
-	private PerfCounters m_counters;
-	
-	private long m_startTime;
+	private CopyOnWriteArrayList<Node> m_BEnodesList;
 	
 	public FEManagementHandler() {
 		
 		m_FEnodesList = new CopyOnWriteArrayList<Node>();
+		m_BEnodesList = new CopyOnWriteArrayList<Node>();
 		
-		m_counters = new PerfCounters();
-		
-		m_counters.numSecondsUp = 0;
-		m_counters.numRequestsReceived = 0;
-		m_counters.numRequestsCompleted = 0;
-		
-		m_startTime = System.nanoTime();
 	}
 
 	@Override
 	public PerfCounters getPerfCounters() {
-		// Calculate current uptime
-		long elapsedTime = System.nanoTime() - m_startTime;
-		m_counters.numSecondsUp = (int)(elapsedTime / 1E9);
+		PerfCounters counters = new PerfCounters();
 		
-		return m_counters;
+		counters.numSecondsUp = getSecondsUp();
+		
+		
+		counters.numRequestsReceived = 0;
+		counters.numRequestsCompleted = 0;
+		
+		return counters;
 	}
 
 	@Override
@@ -52,23 +47,28 @@ public class FEManagementHandler implements A1Management.Iface {
 	public void joinRequest(JoinRequestData data) { 
 		FEServer.print("Request from " + data.host + ":" + data.mport);
 		
-		m_FEnodesList.add(new Node(data.host, data.pport, data.mport, data.ncores));
+		if(data.isBE) {
+			m_BEnodesList.add(new Node(data.host, data.pport, data.mport, data.ncores));
+			printBEnodesList();
+		} else {
+			m_FEnodesList.add(new Node(data.host, data.pport, data.mport, data.ncores));
+			printFEnodesList();
+		}
 		
 		sendJoinAck(data.host, data.mport);
 		
-		printFEnodesList();
 	}
 	
 	@Override
 	public void joinAck(JoinAckData data) {
-		
+		m_isAcked = data.isAcked;
 	}
 	
 	public Node getBestBE() {
 	
 		// Get total weight
 		int totalWeight = 0;
-		Iterator<Node> iterator = m_FEnodesList.iterator(); 
+		Iterator<Node> iterator = m_BEnodesList.iterator(); 
 		while (iterator.hasNext()) {
 			Node data = iterator.next();
 			totalWeight += data.m_ncores;
@@ -78,14 +78,10 @@ public class FEManagementHandler implements A1Management.Iface {
 		Random randomizer = new Random();
 		int weight = (int)randomizer.nextInt(totalWeight + 1);
 		
-		FEServer.print("Total weight: " + totalWeight + " Random num: " + weight);
-		
-		iterator = m_FEnodesList.iterator(); 
+		iterator = m_BEnodesList.iterator(); 
 		while (iterator.hasNext()) {
 			Node data = iterator.next();
 			weight -= data.m_ncores;
-			
-			FEServer.print(data.m_host+":" + data.m_pport + " Current weight: " + weight);
 			
 			if(weight <= 0) {
 				return data;
@@ -93,13 +89,21 @@ public class FEManagementHandler implements A1Management.Iface {
 		}
 		
 		FEServer.print("This shouldn't happen!");
-		return m_FEnodesList.get(0);
+		return m_BEnodesList.get(0);
 	}
 	
 	public void printFEnodesList() {
-		FEServer.print("Current BE nodes connected:");
+		FEServer.print("Current FE nodes connected:");
+		printNodeList(m_FEnodesList);
+	}
 	
-		Iterator<Node> iterator = m_FEnodesList.iterator(); 
+	public void printBEnodesList() {
+		FEServer.print("Current BE nodes connected:");
+		printNodeList(m_BEnodesList);
+	}
+	
+	private void printNodeList(CopyOnWriteArrayList<Node> list) {
+		Iterator<Node> iterator = list.iterator(); 
 		while (iterator.hasNext()) {
 			Node data = iterator.next();
 			FEServer.print("- " + data.m_host + ":" + data.m_pport);
