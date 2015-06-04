@@ -22,6 +22,18 @@ struct JoinAckData {
 	1: bool isAcked
 }
 
+struct NodeData {
+	1: string host,
+	2: i32 pport,
+	3: i32 mport,
+	4: i16 ncores
+}
+
+struct GossipData {
+	1: list<NodeData> BEnodes,
+	2: list<NodeData> FEnodes
+}
+
 service A1Password {
 
 	string hashPassword (
@@ -47,6 +59,8 @@ service A1Management {
 	void joinRequest(1: JoinRequestData data)
 	
 	void joinAck(1: JoinAckData data)
+	
+	void recieveGossip(1: GossipData gossipData)
 	
 }
 

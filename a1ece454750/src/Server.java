@@ -140,14 +140,14 @@ public class Server {
 	}
 	
 	
-	protected static void joinFESeed(boolean isBE) {
-		//Get random Seed to join
+	protected static Node getRandomFESeed() {
 		Random randomizer = new Random();
-		Node seed = m_seedList.get(randomizer.nextInt(m_seedList.size()));
-		
-		joinFESeed(isBE, seed);
+		return m_seedList.get(randomizer.nextInt(m_seedList.size()));
 	}
 	
+	protected static void joinFESeed(boolean isBE) {
+		joinFESeed(isBE, getRandomFESeed());
+	}
 	
 	protected static void joinFESeed(boolean isBE, Node seed) {
 		try {

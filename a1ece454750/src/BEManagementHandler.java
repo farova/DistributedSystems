@@ -37,6 +37,11 @@ public class BEManagementHandler extends ManagementHandler implements A1Manageme
 		BEServer.print("ACKED!");
 		m_isAcked = data.isAcked;
 	}
+	
+	@Override
+	public void recieveGossip(GossipData gossipData) throws org.apache.thrift.TException {
+		
+	}
 }
 
 

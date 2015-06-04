@@ -18,6 +18,20 @@ public class Node {
 		m_ncores = ncores;
 		m_isSeed = isSeed;
 	}
+	
+	@Override
+	public boolean equals(Object obj) 
+	{
+		if (obj instanceof Node) {
+			Node otherNode = (Node) obj;
+			
+			return 	this.m_host.equals(otherNode.m_host) &&
+					this.m_pport == otherNode.m_pport &&
+					this.m_mport == otherNode.m_mport;
+		}
+		
+		return false;
+	}
 
 	public String m_host;
 	public int m_pport;
