@@ -7,12 +7,18 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class FEPasswordHandler implements A1Password.Iface {
 	
 	FEManagementHandler m_managementHandler;
 	
+	private Timer m_timer;
+	
 	public FEPasswordHandler(FEManagementHandler managementHandler) {
 		m_managementHandler = managementHandler;
+		m_timer = new Timer();
 	}
 
 	@Override
@@ -24,6 +30,13 @@ public class FEPasswordHandler implements A1Password.Iface {
 		
 		while(true){
 			Node data = m_managementHandler.getBestBE();
+			
+			if(data == null) {
+				if(!timerInitialized) {
+					startTimer();
+					timerInitialized = true;
+				}
+			}
 			
 			try {
 				TTransport transport;
@@ -37,9 +50,15 @@ public class FEPasswordHandler implements A1Password.Iface {
 
 				transport.close();
 				
+				if(timerInitialized) {
+					stopTimer();
+				}
+				
 				break;
 			} catch (TException x) {
-				m_managementHandler.removeUnreachableBE(data);
+				if(data != null) {
+					m_managementHandler.removeUnreachableBE(data);
+				}
 			}
 		}
 	
@@ -52,9 +71,18 @@ public class FEPasswordHandler implements A1Password.Iface {
 		FEServer.print("FE checkPassword");
 		
 		boolean correctHash = false;
-	
+		
+		boolean timerInitialized = false;
+		
 		while(true){
 			Node data = m_managementHandler.getBestBE();
+			
+			if(data == null) {
+				if(!timerInitialized) {
+					startTimer();
+					timerInitialized = true;
+				}
+			}
 			
 			try {
 				TTransport transport;
@@ -68,13 +96,33 @@ public class FEPasswordHandler implements A1Password.Iface {
 
 				transport.close();
 				
+				if(timerInitialized) {
+					stopTimer();
+				}
+				
 				break;
 			} catch (TException x) {
-				m_managementHandler.removeUnreachableBE(data);
+				if(data != null) {
+					m_managementHandler.removeUnreachableBE(data);
+				}
 			}
 		}
 		
 		return correctHash;
+	}
+	
+	private void startTimer() {
+		m_timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				throw new ServiceUnavailableException();
+			}
+		}, 0, 60000);
+	}
+	
+	private void stopTimer() {
+		m_timer.cancel();
+		m_timer.purge();
 	}
 
 }

@@ -172,7 +172,11 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 	}
 	
 	public Node getBestBE() {
-	
+		
+		if(m_BEnodesList.size() == 0) {
+			return null;
+		}
+		
 		// Get total weight
 		int totalWeight = 0;
 		Iterator<Node> iterator = m_BEnodesList.iterator(); 
