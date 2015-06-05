@@ -74,16 +74,17 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 	public void joinRequest(JoinRequestData data) { 
 		FEServer.print("Request from " + data.host + ":" + data.mport);
 		
+		NodeData node = new NodeData(data.host, data.pport, data.mport, data.ncores);
+		
 		if(data.isBE) {
-			m_BEnodesList.add(new NodeData(data.host, data.pport, data.mport, data.ncores));
+			m_BEnodesList.add(node);
 			printBEnodesList();
 		} else {
-			m_FEnodesList.add(new NodeData(data.host, data.pport, data.mport, data.ncores));
+			m_FEnodesList.add(node);
 			printFEnodesList();
 		}
 		
-		sendJoinAck(data.host, data.mport);
-		
+		sendJoinAck(node);
 	}
 	
 	@Override
@@ -210,14 +211,14 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 		}
 	}
 	
-	private void sendJoinAck(String host, int port) {
+	private void sendJoinAck(NodeData node) {
 		
 		JoinAckData data = new JoinAckData();
 		data.isAcked = true;
 		
 		try {
 			TTransport transport;
-			transport = new TSocket(host, port);
+			transport = new TSocket(node.host, node.mport);
 			transport.open();
 
 			TProtocol protocol = new  TBinaryProtocol(transport);
@@ -228,7 +229,7 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 
 			transport.close();
 		} catch (TException x) {
-			x.printStackTrace();
+			removeUnreachableFE(node);
 		}
 	}
 	

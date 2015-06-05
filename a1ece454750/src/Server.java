@@ -87,7 +87,7 @@ public class Server {
 			new Thread(getPasswordRunnable()).start();
 			new Thread(getManagementRunnable()).start();
 		} catch (Exception x) {
-			x.printStackTrace();
+			System.out.println("Could not start PasswordService and ManagementService threads");
 		}
 	}
 	
@@ -117,7 +117,7 @@ public class Server {
 			print("Starting the PasswordService");
 			server.serve();
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Could not start PasswordService");
 		}
 	}
 
@@ -131,7 +131,7 @@ public class Server {
 			print("Starting the ManagementService");
 			server.serve();
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Could not start ManagementService");
 		}
 	}
 	

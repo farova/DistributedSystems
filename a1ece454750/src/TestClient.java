@@ -23,9 +23,11 @@ public class TestClient extends Server{
 			perform(passClient);
 
 			transport.close();
+		} catch (ServiceUnavailableException x) {
+			System.out.println("ServiceUnavailableException!");
 		} catch (TException x) {
 			x.printStackTrace();
-		} 
+		}
 	}
 
 	private static void perform(A1Password.Client passClient) throws TException
