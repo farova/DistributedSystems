@@ -9,7 +9,7 @@ public class FEServer extends Server {
 	public static void main(String [] args) {
 		parseArgs(args);
 
-		m_managementHandler = new FEManagementHandler();
+		m_managementHandler = new FEManagementHandler(m_host, m_mport, m_pport, m_ncores);
 		m_managementProcessor = new A1Management.Processor(m_managementHandler);
 		
 		m_passwordHandler = new FEPasswordHandler(m_managementHandler);

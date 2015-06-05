@@ -39,8 +39,9 @@ public class BEManagementHandler extends ManagementHandler implements A1Manageme
 	}
 	
 	@Override
-	public void recieveGossip(GossipData gossipData) throws org.apache.thrift.TException {
+	public void recieveGossip(GossipData gossipData) {
 		
+		FEServer.print("BAD GOSSIP:");
 	}
 }
 

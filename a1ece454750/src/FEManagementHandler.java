@@ -23,10 +23,23 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 	
 	private Timer m_timer;
 	
-	public FEManagementHandler() {
+	private String m_host;
+	private int m_mport;
+	private int m_pport;
+	private int m_ncores;
+	
+	public FEManagementHandler(String host, int mport, int pport, short ncores) {
+		
+		m_host = host;
+		m_mport = mport;
+		m_pport = pport;
+		m_ncores = ncores;
 		
 		m_FEnodesList = new CopyOnWriteArrayList<Node>();
 		m_BEnodesList = new CopyOnWriteArrayList<Node>();
+		
+		// Add self to FE nodes list
+		m_FEnodesList.add(new Node(host, pport, mport, ncores));
 		
 		m_timer = new Timer();
 		
@@ -36,7 +49,7 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 			public void run() {
 				gossip();
 			}
-		}, 1000, 1000); //100, 100);
+		}, 100, 100);
 	}
 
 	@Override
@@ -81,28 +94,28 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 	@Override
 	public void recieveGossip(GossipData gossipData) {
 		
-		FEServer.print("Old BE node list:");
-		printBEnodesList();
+		//FEServer.print("Old BE node list:");
+		//printBEnodesList();
 		
 		for(NodeData data : gossipData.BEnodes) {
 			Node newNode = new Node( data.host, data.pport, data.mport, data.ncores);
 			m_BEnodesList.addIfAbsent(newNode);
 		}
 		
-		FEServer.print("New BE node list:");
-		printBEnodesList();
+		//FEServer.print("New BE node list:");
+		//printBEnodesList();
 		
 		
-		FEServer.print("Old BE node list:");
-		printFEnodesList();
+		//FEServer.print("Old FE node list:");
+		//printFEnodesList();
 		
 		for(NodeData data : gossipData.FEnodes) {
 			Node newNode = new Node( data.host, data.pport, data.mport, data.ncores);
 			m_FEnodesList.addIfAbsent(newNode);
 		}
 		
-		FEServer.print("New FE node list:");
-		printFEnodesList();
+		//FEServer.print("New FE node list:");
+		//printFEnodesList();
 		
 	}
 	
@@ -125,24 +138,23 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 		gossipData.BEnodes = BEnodes;
 		gossipData.FEnodes = FEnodes;
 		
-		
-		printFEnodesList();
-		
 		for(Node node : m_FEnodesList) {
-			try {
-				TTransport transport;
-				transport = new TSocket(node.m_host, node.m_mport);
-				transport.open();
-	
-				TProtocol protocol = new  TBinaryProtocol(transport);
-				A1Management.Client FEmanagement = new A1Management.Client(protocol);
-				
-				FEServer.print("Sending Gossip");
-				FEmanagement.recieveGossip(gossipData);
-	
-				transport.close();
-			} catch (TException x) {
-				x.printStackTrace();
+			if(node.m_host != m_host && node.m_mport != m_mport) {
+				try {
+					TTransport transport;
+					transport = new TSocket(node.m_host, node.m_mport);
+					transport.open();
+					
+					TProtocol protocol = new  TBinaryProtocol(transport);
+					A1Management.Client FEmanagement = new A1Management.Client(protocol);
+					
+					//FEServer.print("Sending Gossip");
+					FEmanagement.recieveGossip(gossipData);
+		
+					transport.close();
+				} catch (TException x) {
+					x.printStackTrace();
+				}
 			}
 		}
 	}
