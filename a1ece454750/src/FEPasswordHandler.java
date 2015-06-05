@@ -35,31 +35,33 @@ public class FEPasswordHandler implements A1Password.Iface {
 		while(true){
 			NodeData data = m_managementHandler.getBestBE();
 			
-			if(data == null && !timerInitialized) {
-				startTimer();
-				timerInitialized = true;
-			}
-			
-			try {
-				TTransport transport;
-				transport = new TSocket(data.host, data.pport);
-				transport.open();
-
-				TProtocol protocol = new  TBinaryProtocol(transport);
-				A1Password.Client BEpass = new A1Password.Client(protocol);
-				
-				hashedPass = BEpass.hashPassword(password, logRounds);
-
-				transport.close();
-				
-				if(timerInitialized) {
-					stopTimer();
+			if(data == null) {
+				if(!timerInitialized) {
+					startTimer();
+					timerInitialized = true;
 				}
-				
-				break;
-			} catch (TException x) {
-				if(data != null) {
-					m_managementHandler.removeUnreachableBE(data);
+			} else {			
+				try {
+					TTransport transport;
+					transport = new TSocket(data.host, data.pport);
+					transport.open();
+
+					TProtocol protocol = new  TBinaryProtocol(transport);
+					A1Password.Client BEpass = new A1Password.Client(protocol);
+					
+					hashedPass = BEpass.hashPassword(password, logRounds);
+
+					transport.close();
+					
+					if(timerInitialized) {
+						stopTimer();
+					}
+					
+					break;
+				} catch (TException x) {
+					if(data != null) {
+						m_managementHandler.removeUnreachableBE(data);
+					}
 				}
 			}
 			
@@ -83,34 +85,34 @@ public class FEPasswordHandler implements A1Password.Iface {
 		while(true){
 			NodeData data = m_managementHandler.getBestBE();
 			
-			if(data == null && !timerInitialized) {
-				startTimer();
-				timerInitialized = true;
-			}
-			
-			try {
-				TTransport transport;
-				transport = new TSocket(data.host, data.pport);
-				transport.open();
-
-				TProtocol protocol = new  TBinaryProtocol(transport);
-				A1Password.Client BEpass = new A1Password.Client(protocol);
-				
-				correctHash = BEpass.checkPassword(password, hash);
-
-				transport.close();
-				
-				if(timerInitialized) {
-					stopTimer();
+			if(data == null) {
+				if(!timerInitialized) {
+					startTimer();
+					timerInitialized = true;
 				}
-				
-				break;
-			} catch (TException x) {
-				if(data != null) {
+			} else {
+				try {
+					TTransport transport;
+					transport = new TSocket(data.host, data.pport);
+					transport.open();
+
+					TProtocol protocol = new  TBinaryProtocol(transport);
+					A1Password.Client BEpass = new A1Password.Client(protocol);
+					
+					correctHash = BEpass.checkPassword(password, hash);
+
+					transport.close();
+					
+					if(timerInitialized) {
+						stopTimer();
+					}
+					
+					break;
+				} catch (TException x) {
 					m_managementHandler.removeUnreachableBE(data);
 				}
 			}
-			
+				
 			if(timerInitialized && m_throwServiceUnavailableException) {
 				throw new ServiceUnavailableException();
 			}
@@ -120,17 +122,19 @@ public class FEPasswordHandler implements A1Password.Iface {
 	}
 	
 	private void startTimer() {
-		m_timer.scheduleAtFixedRate(new TimerTask() {
+		m_timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				m_throwServiceUnavailableException = true;
 			}
-		}, 0, 60000);
+		}, 60000);
+		FEServer.print("Staring timer");
 	}
 	
 	private void stopTimer() {
 		m_timer.cancel();
 		m_timer.purge();
+		FEServer.print("Ending timer");
 	}
 
 }
