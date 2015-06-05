@@ -27,7 +27,7 @@ public class Server {
 	protected static short m_ncores;
 	protected static boolean m_debug;
 	
-	protected static List<Node> m_seedList;
+	protected static List<NodeData> m_seedList;
 	
 	protected static final String m_hostURL = ".uwaterloo.ca";
 	
@@ -38,7 +38,7 @@ public class Server {
 	protected static void parseArgs(String [] args) {
 	
 		m_debug = false;
-		m_seedList = new ArrayList<Node>();
+		m_seedList = new ArrayList<NodeData>();
 	
 		try {
 			for(int i = 0; i < args.length; i++) {
@@ -58,9 +58,11 @@ public class Server {
 						String[] seedData = seedDataString.split(":");
 						
 						m_seedList.add(
-							new Node(
+							new NodeData(
 								seedData[0] + m_hostURL,
-								Integer.parseInt( seedData[1])
+								0,
+								Integer.parseInt( seedData[1]),
+								(short)0
 							)
 						);
 					}
@@ -140,7 +142,7 @@ public class Server {
 	}
 	
 	
-	protected static Node getRandomFESeed() {
+	protected static NodeData getRandomFESeed() {
 		Random randomizer = new Random();
 		return m_seedList.get(randomizer.nextInt(m_seedList.size()));
 	}
@@ -149,7 +151,7 @@ public class Server {
 		joinFESeed(isBE, getRandomFESeed(), true);
 	}
 	
-	protected static void joinFESeed(boolean isBE, Node seed, boolean retryWithRandom) {
+	protected static void joinFESeed(boolean isBE, NodeData seed, boolean retryWithRandom) {
 	
 		//Generate join request data
 		JoinRequestData request = new JoinRequestData();
@@ -162,14 +164,14 @@ public class Server {
 		do {
 			try {
 				TTransport transport;
-				transport = new TSocket(seed.m_host, seed.m_mport);
+				transport = new TSocket(seed.host, seed.mport);
 				transport.open();
 
 				TProtocol protocol = new  TBinaryProtocol(transport);
 				A1Management.Client FEmanagement = new A1Management.Client(protocol);
 
 				// Try join server
-				print("Sending request to FE node to " + seed.m_host + ":" + seed.m_mport);
+				print("Sending request to FE node to " + seed.host + ":" + seed.mport);
 				FEmanagement.joinRequest(request);
 
 				transport.close();

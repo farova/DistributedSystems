@@ -20,9 +20,9 @@ public class FEServer extends Server {
 		
 		for(int i = 0; i < getNumSeeds(); i++) {
 			if(!m_managementHandler.isAcked()) {
-				Node seed = m_seedList.get(i);
+				NodeData seed = m_seedList.get(i);
 				
-				if(seed.m_host != m_host && seed.m_mport != m_mport) {
+				if(seed.host != m_host && seed.mport != m_mport) {
 					joinFESeed(false, seed, false);
 				}
 			} else {

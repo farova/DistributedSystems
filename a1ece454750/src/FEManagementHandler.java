@@ -18,8 +18,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class FEManagementHandler extends ManagementHandler implements A1Management.Iface {
 	
-	private CopyOnWriteArrayList<Node> m_FEnodesList;
-	private CopyOnWriteArrayList<Node> m_BEnodesList;
+	private CopyOnWriteArrayList<NodeData> m_FEnodesList;
+	private CopyOnWriteArrayList<NodeData> m_BEnodesList;
 	
 	private Timer m_timer;
 	
@@ -35,11 +35,11 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 		m_pport = pport;
 		m_ncores = ncores;
 		
-		m_FEnodesList = new CopyOnWriteArrayList<Node>();
-		m_BEnodesList = new CopyOnWriteArrayList<Node>();
+		m_FEnodesList = new CopyOnWriteArrayList<NodeData>();
+		m_BEnodesList = new CopyOnWriteArrayList<NodeData>();
 		
 		// Add self to FE nodes list
-		m_FEnodesList.add(new Node(host, pport, mport, ncores));
+		m_FEnodesList.add(new NodeData(host, pport, mport, ncores));
 		
 		m_timer = new Timer();
 		
@@ -75,10 +75,10 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 		FEServer.print("Request from " + data.host + ":" + data.mport);
 		
 		if(data.isBE) {
-			m_BEnodesList.add(new Node(data.host, data.pport, data.mport, data.ncores));
+			m_BEnodesList.add(new NodeData(data.host, data.pport, data.mport, data.ncores));
 			printBEnodesList();
 		} else {
-			m_FEnodesList.add(new Node(data.host, data.pport, data.mport, data.ncores));
+			m_FEnodesList.add(new NodeData(data.host, data.pport, data.mport, data.ncores));
 			printFEnodesList();
 		}
 		
@@ -98,8 +98,7 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 		//printBEnodesList();
 		
 		for(NodeData data : gossipData.BEnodes) {
-			Node newNode = new Node( data.host, data.pport, data.mport, data.ncores);
-			m_BEnodesList.addIfAbsent(newNode);
+			m_BEnodesList.addIfAbsent(data);
 		}
 		
 		//FEServer.print("New BE node list:");
@@ -110,8 +109,7 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 		//printFEnodesList();
 		
 		for(NodeData data : gossipData.FEnodes) {
-			Node newNode = new Node( data.host, data.pport, data.mport, data.ncores);
-			m_FEnodesList.addIfAbsent(newNode);
+			m_FEnodesList.addIfAbsent(data);
 		}
 		
 		//FEServer.print("New FE node list:");
@@ -122,17 +120,17 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 	public void gossip() {
 		GossipData gossipData = new GossipData();
 		
-		gossipData.BEnodes = getNodeData(m_BEnodesList);
-		gossipData.FEnodes = getNodeData(m_FEnodesList);
+		gossipData.BEnodes = m_BEnodesList;
+		gossipData.FEnodes = m_FEnodesList;
 		
-		List<Node> unreachableNodes = new ArrayList<Node>();
+		List<NodeData> unreachableNodes = new ArrayList<NodeData>();
 		
 		
-		for(Node node : m_FEnodesList) {
-			if(node.m_host != m_host && node.m_mport != m_mport) {
+		for(NodeData node : m_FEnodesList) {
+			if(node.host != m_host && node.mport != m_mport) {
 				try {
 					TTransport transport;
-					transport = new TSocket(node.m_host, node.m_mport);
+					transport = new TSocket(node.host, node.mport);
 					transport.open();
 					
 					TProtocol protocol = new  TBinaryProtocol(transport);
@@ -154,24 +152,15 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 		//printFEnodesList();
 	}
 	
-	private List<NodeData> getNodeData(CopyOnWriteArrayList<Node> nodes) {
-		List<NodeData> nodeDatas = new ArrayList<NodeData>();
-		for(Node data : nodes) {
-			NodeData newNode = new NodeData(data.m_host, data.m_pport, data.m_mport, data.m_ncores);
-			nodeDatas.add(newNode);
-		}
-		return nodeDatas;
-	}
-	
-	public void removeUnreachableBE(Node node) {
+	public void removeUnreachableBE(NodeData node) {
 		m_BEnodesList.remove(node);
 	}
 	
-	public void removeUnreachableFE(Node node) {
+	public void removeUnreachableFE(NodeData node) {
 		m_FEnodesList.remove(node);
 	}
 	
-	public Node getBestBE() {
+	public NodeData getBestBE() {
 		
 		if(m_BEnodesList.size() == 0) {
 			return null;
@@ -179,10 +168,10 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 		
 		// Get total weight
 		int totalWeight = 0;
-		Iterator<Node> iterator = m_BEnodesList.iterator(); 
+		Iterator<NodeData> iterator = m_BEnodesList.iterator(); 
 		while (iterator.hasNext()) {
-			Node data = iterator.next();
-			totalWeight += data.m_ncores;
+			NodeData data = iterator.next();
+			totalWeight += data.ncores;
 		}
 		
 		// Choose random node based on nCores
@@ -191,8 +180,8 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 		
 		iterator = m_BEnodesList.iterator(); 
 		while (iterator.hasNext()) {
-			Node data = iterator.next();
-			weight -= data.m_ncores;
+			NodeData data = iterator.next();
+			weight -= data.ncores;
 			
 			if(weight <= 0) {
 				return data;
@@ -213,11 +202,11 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 		printNodeList(m_BEnodesList);
 	}
 	
-	private void printNodeList(CopyOnWriteArrayList<Node> list) {
-		Iterator<Node> iterator = list.iterator(); 
+	private void printNodeList(CopyOnWriteArrayList<NodeData> list) {
+		Iterator<NodeData> iterator = list.iterator(); 
 		while (iterator.hasNext()) {
-			Node data = iterator.next();
-			FEServer.print("- " + data.m_host + ":" + data.m_pport);
+			NodeData data = iterator.next();
+			FEServer.print("- " + data.host + ":" + data.pport);
 		}
 	}
 	

@@ -9,4 +9,5 @@ TODO:
 - If BE killed while processing request BE must forward o next available BE
 - Remove crashed nodes
 - If cannot connect to any FE or BEs for 60s, throw unreachable destination expection 
+- If BE cannot find FEs, keep trying them all one by one
 - Report
