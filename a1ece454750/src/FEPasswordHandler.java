@@ -29,7 +29,7 @@ public class FEPasswordHandler implements A1Password.Iface {
 		FEServer.print("FE hashPasword");
 	
 		m_managementHandler.incrementNumRequestsReceived();
-	
+		
 		String hashedPass = "";
 		
 		boolean timerInitialized = false;
@@ -51,13 +51,13 @@ public class FEPasswordHandler implements A1Password.Iface {
 					TProtocol protocol = new  TBinaryProtocol(transport);
 					A1Password.Client BEpass = new A1Password.Client(protocol);
 					
-					hashedPass = BEpass.hashPassword(password, logRounds);
-
-					transport.close();
-					
 					if(timerInitialized) {
 						stopTimer();
 					}
+					
+					hashedPass = BEpass.hashPassword(password, logRounds);
+
+					transport.close();
 					
 					break;
 				} catch (TException x) {
@@ -105,14 +105,13 @@ public class FEPasswordHandler implements A1Password.Iface {
 					TProtocol protocol = new  TBinaryProtocol(transport);
 					A1Password.Client BEpass = new A1Password.Client(protocol);
 					
-					correctHash = BEpass.checkPassword(password, hash);
-
-					transport.close();
-					
 					if(timerInitialized) {
 						stopTimer();
 					}
 					
+					correctHash = BEpass.checkPassword(password, hash);
+
+					transport.close();
 					break;
 				} catch (TException x) {
 					m_managementHandler.removeUnreachableBE(data);

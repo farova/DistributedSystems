@@ -16,6 +16,12 @@ public class ManagementHandler {
 	public ManagementHandler() {
 		m_isAcked = false;
 		m_startTime = System.nanoTime();
+		
+		m_numRequestsReceived = new AtomicInteger();
+		m_numRequestsCompleted = new AtomicInteger();
+		
+		m_numRequestsReceived.set(0);
+		m_numRequestsCompleted.set(0);
 	}
 	
 	private int getSecondsUp() {
