@@ -14,7 +14,7 @@ public class TestClient extends Server{
 
 		try {
 			TTransport transport;
-			transport = new TSocket("eceubuntu.uwaterloo.ca", 29770);
+			transport = new TSocket(m_host, m_pport);
 			transport.open();
 
 			TProtocol protocol = new  TBinaryProtocol(transport);

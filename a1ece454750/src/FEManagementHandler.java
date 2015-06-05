@@ -122,21 +122,11 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 	public void gossip() {
 		GossipData gossipData = new GossipData();
 		
-		List<NodeData> BEnodes = new ArrayList<NodeData>();
-		List<NodeData> FEnodes = new ArrayList<NodeData>();
+		gossipData.BEnodes = getNodeData(m_BEnodesList);
+		gossipData.FEnodes = getNodeData(m_FEnodesList);
 		
-		for(Node data : m_BEnodesList) {
-			NodeData newNode = new NodeData( data.m_host, data.m_pport, data.m_mport, data.m_ncores);
-			BEnodes.add(newNode);
-		}
+		List<Node> unreachableNodes = new ArrayList<Node>();
 		
-		for(Node data : m_FEnodesList) {
-			NodeData newNode = new NodeData( data.m_host, data.m_pport, data.m_mport, data.m_ncores);
-			FEnodes.add(newNode);
-		}
-		
-		gossipData.BEnodes = BEnodes;
-		gossipData.FEnodes = FEnodes;
 		
 		for(Node node : m_FEnodesList) {
 			if(node.m_host != m_host && node.m_mport != m_mport) {
@@ -153,10 +143,25 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 		
 					transport.close();
 				} catch (TException x) {
-					x.printStackTrace();
+					unreachableNodes.add(node);
 				}
 			}
 		}
+		
+		m_FEnodesList.removeAll(unreachableNodes);
+		
+		
+		FEServer.print("New FE node list:");
+		printFEnodesList();
+	}
+	
+	private List<NodeData> getNodeData(CopyOnWriteArrayList<Node> nodes) {
+		List<NodeData> nodeDatas = new ArrayList<NodeData>();
+		for(Node data : nodes) {
+			NodeData newNode = new NodeData(data.m_host, data.m_pport, data.m_mport, data.m_ncores);
+			nodeDatas.add(newNode);
+		}
+		return nodeDatas;
 	}
 	
 	public Node getBestBE() {
