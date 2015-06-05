@@ -150,9 +150,8 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 		
 		m_FEnodesList.removeAll(unreachableNodes);
 		
-		
-		FEServer.print("New FE node list:");
-		printFEnodesList();
+		//FEServer.print("New FE node list:");
+		//printFEnodesList();
 	}
 	
 	private List<NodeData> getNodeData(CopyOnWriteArrayList<Node> nodes) {
