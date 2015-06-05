@@ -11,7 +11,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -54,20 +53,12 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 
 	@Override
 	public PerfCounters getPerfCounters() {
-		PerfCounters counters = new PerfCounters();
-		
-		counters.numSecondsUp = getSecondsUp();
-		
-		
-		counters.numRequestsReceived = 0;
-		counters.numRequestsCompleted = 0;
-		
-		return counters;
+		return getPerfCounterObject();
 	}
 
 	@Override
 	public List<String> getGroupMembers() throws TException {
-		return Arrays.asList("mfarova", "n9krishn");
+		return getGroupMembersList();
 	}
 	
 	@Override

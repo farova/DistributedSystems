@@ -27,7 +27,9 @@ public class FEPasswordHandler implements A1Password.Iface {
 	public String hashPassword(String password, short logRounds) throws ServiceUnavailableException {
 	
 		FEServer.print("FE hashPasword");
-		
+	
+		m_managementHandler.incrementNumRequestsReceived();
+	
 		String hashedPass = "";
 		
 		boolean timerInitialized = false;
@@ -70,6 +72,8 @@ public class FEPasswordHandler implements A1Password.Iface {
 			}
 		}
 	
+		m_managementHandler.incrementNumRequestsCompleted();
+	
 		return hashedPass;
 	}
 
@@ -77,6 +81,8 @@ public class FEPasswordHandler implements A1Password.Iface {
 	public boolean checkPassword(String password, String hash) throws ServiceUnavailableException {
 	
 		FEServer.print("FE checkPassword");
+		
+		m_managementHandler.incrementNumRequestsReceived();
 		
 		boolean correctHash = false;
 		
@@ -117,6 +123,8 @@ public class FEPasswordHandler implements A1Password.Iface {
 				throw new ServiceUnavailableException();
 			}
 		}
+		
+		m_managementHandler.incrementNumRequestsCompleted();
 		
 		return correctHash;
 	}

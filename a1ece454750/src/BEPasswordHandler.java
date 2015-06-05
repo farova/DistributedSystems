@@ -5,7 +5,10 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class BEPasswordHandler implements A1Password.Iface {
 	
-	public BEPasswordHandler() {
+	BEManagementHandler m_managementHandler;
+	
+	public BEPasswordHandler(BEManagementHandler managementHandler) {
+		m_managementHandler = managementHandler;
 	}
 
 	@Override
@@ -13,7 +16,13 @@ public class BEPasswordHandler implements A1Password.Iface {
 	
 		BEServer.print("BE hashPassword");
 	
-		return BCrypt.hashpw(password, BCrypt.gensalt(logRounds));
+		m_managementHandler.incrementNumRequestsReceived();
+		
+		String result = BCrypt.hashpw(password, BCrypt.gensalt(logRounds));
+		
+		m_managementHandler.incrementNumRequestsCompleted();
+		
+		return result;
 	}
 
 	@Override
@@ -21,7 +30,13 @@ public class BEPasswordHandler implements A1Password.Iface {
 	
 		BEServer.print("BE checkPassword");
 		
-		return BCrypt.checkpw(password, hash);
+		m_managementHandler.incrementNumRequestsReceived();
+		
+		boolean result = BCrypt.checkpw(password, hash);
+		
+		m_managementHandler.incrementNumRequestsCompleted();
+		
+		return result;
 	}
 
 }

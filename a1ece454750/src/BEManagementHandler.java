@@ -3,7 +3,6 @@ package ece454750s15a1;
 
 import org.apache.thrift.TException;
 import java.util.List;
-import java.util.Arrays;
 
 public class BEManagementHandler extends ManagementHandler implements A1Management.Iface {
 	
@@ -11,20 +10,12 @@ public class BEManagementHandler extends ManagementHandler implements A1Manageme
 
 	@Override
 	public PerfCounters getPerfCounters() {
-		PerfCounters counters = new PerfCounters();
-		
-		counters.numSecondsUp = getSecondsUp();
-		
-		
-		counters.numRequestsReceived = 0;
-		counters.numRequestsCompleted = 0;
-		
-		return counters;
+		return getPerfCounterObject();
 	}
 
 	@Override
 	public List<String> getGroupMembers() throws TException {
-		return Arrays.asList("mfarova", "n9krishn");
+		return getGroupMembersList();
 	}
 
 	@Override
