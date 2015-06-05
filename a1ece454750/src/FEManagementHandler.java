@@ -163,6 +163,14 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 		return nodeDatas;
 	}
 	
+	public void removeUnreachableBE(Node node) {
+		m_BEnodesList.remove(node);
+	}
+	
+	public void removeUnreachableFE(Node node) {
+		m_FEnodesList.remove(node);
+	}
+	
 	public Node getBestBE() {
 	
 		// Get total weight

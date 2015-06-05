@@ -19,24 +19,28 @@ public class FEPasswordHandler implements A1Password.Iface {
 	public String hashPassword(String password, short logRounds) {
 	
 		FEServer.print("FE hashPasword");
-	
-		Node data = m_managementHandler.getBestBE();
 		
 		String hashedPass = "";
-	
-		try {
-			TTransport transport;
-			transport = new TSocket(data.m_host, data.m_pport);
-			transport.open();
-
-			TProtocol protocol = new  TBinaryProtocol(transport);
-			A1Password.Client BEpass = new A1Password.Client(protocol);
+		
+		while(true){
+			Node data = m_managementHandler.getBestBE();
 			
-			hashedPass = BEpass.hashPassword(password, logRounds);
+			try {
+				TTransport transport;
+				transport = new TSocket(data.m_host, data.m_pport);
+				transport.open();
 
-			transport.close();
-		} catch (TException x) {
-			x.printStackTrace();
+				TProtocol protocol = new  TBinaryProtocol(transport);
+				A1Password.Client BEpass = new A1Password.Client(protocol);
+				
+				hashedPass = BEpass.hashPassword(password, logRounds);
+
+				transport.close();
+				
+				break;
+			} catch (TException x) {
+				m_managementHandler.removeUnreachableBE(data);
+			}
 		}
 	
 		return hashedPass;
@@ -47,23 +51,27 @@ public class FEPasswordHandler implements A1Password.Iface {
 	
 		FEServer.print("FE checkPassword");
 		
-		Node data = m_managementHandler.getBestBE();
-		
 		boolean correctHash = false;
 	
-		try {
-			TTransport transport;
-			transport = new TSocket(data.m_host, data.m_pport);
-			transport.open();
-
-			TProtocol protocol = new  TBinaryProtocol(transport);
-			A1Password.Client BEpass = new A1Password.Client(protocol);
+		while(true){
+			Node data = m_managementHandler.getBestBE();
 			
-			correctHash = BEpass.checkPassword(password, hash);
+			try {
+				TTransport transport;
+				transport = new TSocket(data.m_host, data.m_pport);
+				transport.open();
 
-			transport.close();
-		} catch (TException x) {
-			x.printStackTrace();
+				TProtocol protocol = new  TBinaryProtocol(transport);
+				A1Password.Client BEpass = new A1Password.Client(protocol);
+				
+				correctHash = BEpass.checkPassword(password, hash);
+
+				transport.close();
+				
+				break;
+			} catch (TException x) {
+				m_managementHandler.removeUnreachableBE(data);
+			}
 		}
 		
 		return correctHash;

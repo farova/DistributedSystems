@@ -23,7 +23,7 @@ public class FEServer extends Server {
 				Node seed = m_seedList.get(i);
 				
 				if(seed.m_host != m_host && seed.m_mport != m_mport) {
-					joinFESeed(false, seed);
+					joinFESeed(false, seed, false);
 				}
 			} else {
 				break;

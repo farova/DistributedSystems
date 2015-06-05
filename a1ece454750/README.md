@@ -8,4 +8,5 @@ TODO:
 - Dont print stack traces
 - If BE killed while processing request BE must forward o next available BE
 - Remove crashed nodes
+- If cannot connect to any FE or BEs for 60s, throw unreachable destination expection 
 - Report

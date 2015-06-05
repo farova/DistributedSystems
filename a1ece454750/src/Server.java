@@ -69,7 +69,7 @@ public class Server {
 				}
 			}
 		} catch (Exception x) {
-			x.printStackTrace();
+			print("Bad arguments!");
 		}
 		
 		print(	
@@ -146,34 +146,38 @@ public class Server {
 	}
 	
 	protected static void joinFESeed(boolean isBE) {
-		joinFESeed(isBE, getRandomFESeed());
+		joinFESeed(isBE, getRandomFESeed(), true);
 	}
 	
-	protected static void joinFESeed(boolean isBE, Node seed) {
-		try {
-			
-			//Generate join request data
-			JoinRequestData request = new JoinRequestData();
-			request.host = m_host;
-			request.pport = m_pport;
-			request.mport = m_mport;
-			request.ncores = m_ncores;
-			request.isBE = isBE;
-			
-			TTransport transport;
-			transport = new TSocket(seed.m_host, seed.m_mport);
-			transport.open();
+	protected static void joinFESeed(boolean isBE, Node seed, boolean retryWithRandom) {
+	
+		//Generate join request data
+		JoinRequestData request = new JoinRequestData();
+		request.host = m_host;
+		request.pport = m_pport;
+		request.mport = m_mport;
+		request.ncores = m_ncores;
+		request.isBE = isBE;
+		
+		do {
+			try {
+				TTransport transport;
+				transport = new TSocket(seed.m_host, seed.m_mport);
+				transport.open();
 
-			TProtocol protocol = new  TBinaryProtocol(transport);
-			A1Management.Client FEmanagement = new A1Management.Client(protocol);
+				TProtocol protocol = new  TBinaryProtocol(transport);
+				A1Management.Client FEmanagement = new A1Management.Client(protocol);
 
-			// Try join server
-			print("Sending request to FE node to " + seed.m_host + ":" + seed.m_mport);
-			FEmanagement.joinRequest(request);
+				// Try join server
+				print("Sending request to FE node to " + seed.m_host + ":" + seed.m_mport);
+				FEmanagement.joinRequest(request);
 
-			transport.close();
-		} catch (TException x) {
-			x.printStackTrace();
-		} 
+				transport.close();
+				
+				break;
+			} catch (TException x) {
+				seed = getRandomFESeed();
+			} 
+		} while(retryWithRandom);
 	}
 }

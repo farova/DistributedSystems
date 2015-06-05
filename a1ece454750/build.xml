@@ -45,7 +45,7 @@
 	<target name="TestClient" description="Run the TestClient" >
 		<echo>Starting up TestClient node:</echo>
 		<java classname="ece454750s15a1.TestClient" classpathref="ece454750s15a1.classpath" failonerror="true">
-			<arg line="-d -host eceubuntu -seeds eceubuntu:19771"/>
+			<arg line="-d -host eceubuntu -pport 29770 -seeds eceubuntu:19771"/>
 		</java>
 	</target>
 

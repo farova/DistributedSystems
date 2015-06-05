@@ -33,7 +33,7 @@ public class TestClient extends Server{
 		String password = "test";
 		
 		System.out.println("Doing forward hash: ");
-		String hash = passClient.hashPassword(password, (short)10);
+		String hash = passClient.hashPassword(password, (short)20);
 		System.out.println("Password: " + password + " Hash: " + hash);
 		
 		System.out.println("Doing backwards hash: ");
