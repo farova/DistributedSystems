@@ -12,7 +12,6 @@ import java.util.TimerTask;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class FEManagementHandler extends ManagementHandler implements A1Management.Iface {
@@ -166,9 +165,7 @@ public class FEManagementHandler extends ManagementHandler implements A1Manageme
 			totalWeight += data.ncores;
 		}
 		
-		// Choose random node based on nCores
-		Random randomizer = new Random();
-		int weight = (int)randomizer.nextInt(totalWeight + 1);
+		double weight = Math.random() * totalWeight;
 		
 		iterator = m_BEnodesList.iterator(); 
 		while (iterator.hasNext()) {
