@@ -23,7 +23,9 @@ public class TriangleCountImpl {
 
     public List<String> getGroupMembers() {
 	ArrayList<String> ret = new ArrayList<String>();
-	ret.add("wgolab");
+	ret.add("mfarova");
+	ret.add("n9krishn");
+	ret.add("twhart");
 	return ret;
     }
 
