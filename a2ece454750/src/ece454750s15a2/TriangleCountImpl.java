@@ -34,23 +34,56 @@ public class TriangleCountImpl {
 
 	ArrayList<ArrayList<Integer>> adjacencyList = getAdjacencyList(input);
 	ArrayList<Triangle> ret = new ArrayList<Triangle>();
-
+    // left here for reference
+    /*
 	// naive triangle counting algorithm
 	int numVertices = adjacencyList.size();
 	for (int i = 0; i < numVertices; i++) {
 	    ArrayList<Integer> n1 = adjacencyList.get(i);
  	    for (int j: n1) {
-		ArrayList<Integer> n2 = adjacencyList.get(j);
-		for (int k: n2) {
-		    ArrayList<Integer> n3 = adjacencyList.get(k);
-		    for (int l: n3) {
-			if (i < j && j < k && l == i) {
-			    ret.add(new Triangle(i, j, k));
-			}
-		    }
-		}
+    		ArrayList<Integer> n2 = adjacencyList.get(j);
+    		for (int k: n2) {
+    		    ArrayList<Integer> n3 = adjacencyList.get(k);
+    		    for (int l: n3) {
+        			if (i < j && j < k && l == i) {
+        			    ret.add(new Triangle(i, j, k));
+        			}
+    		    }
+    		}
 	    }
 	}
+    */
+
+    Boolean foundOne = false;
+    int numVertices = adjacencyList.size();
+    for (int i = 0; i < numVertices; i++) {
+        ArrayList<Integer> n1 = adjacencyList.get(i);
+        if (n1.size() < 2) {
+            continue;
+        } else {
+            for (int j : n1) {
+                ArrayList<Integer> n2 = adjacencyList.get(j);
+                if (n2.size() < 2) {
+                    continue;
+                } else if (i < j) {
+                    for (int k : n2) {
+                        if (k == i) {
+                            continue;
+                        } else if (!foundOne) {
+                            for (int l = 0; l < n1.size(); l++) {
+                                if (k == n1.get(l)) {
+                                    if (i < j && j < k) {
+                                        ret.add(new Triangle(i,j,k));
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 	return ret;
     }
@@ -61,13 +94,13 @@ public class TriangleCountImpl {
 	String strLine = br.readLine();
 	if (!strLine.contains("vertices") || !strLine.contains("edges")) {
 	    System.err.println("Invalid graph file format. Offending line: " + strLine);
-	    System.exit(-1);	    
+	    System.exit(-1);
 	}
 	String parts[] = strLine.split(", ");
 	int numVertices = Integer.parseInt(parts[0].split(" ")[0]);
 	int numEdges = Integer.parseInt(parts[1].split(" ")[0]);
 	System.out.println("Found graph with " + numVertices + " vertices and " + numEdges + " edges");
- 
+
 	ArrayList<ArrayList<Integer>> adjacencyList = new ArrayList<ArrayList<Integer>>(numVertices);
 	for (int i = 0; i < numVertices; i++) {
 	    adjacencyList.add(new ArrayList<Integer>());
