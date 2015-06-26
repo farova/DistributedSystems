@@ -53,8 +53,7 @@ public class TriangleCountImpl {
 	    }
 	}
     */
-
-    Boolean foundOne = false;
+    
     int numVertices = adjacencyList.size();
     for (int i = 0; i < numVertices; i++) {
         ArrayList<Integer> n1 = adjacencyList.get(i);
@@ -69,7 +68,7 @@ public class TriangleCountImpl {
                     for (int k : n2) {
                         if (k == i) {
                             continue;
-                        } else if (!foundOne) {
+                        } else {
                             for (int l = 0; l < n1.size(); l++) {
                                 if (k == n1.get(l)) {
                                     if (i < j && j < k) {
