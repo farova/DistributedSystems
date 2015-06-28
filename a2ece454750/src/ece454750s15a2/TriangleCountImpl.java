@@ -85,7 +85,7 @@ public class TriangleCountImpl {
         }
     }
     */
-
+    /*
     int numVertices = adjacencyList.size();
     for (int i = 0; i < numVertices; i++) {
         ArrayList<Integer> n1 = adjacencyList.get(i);
@@ -106,6 +106,28 @@ public class TriangleCountImpl {
                 }
             }
         }
+    }
+    */
+
+    int numVertices = adjacencyList.size();
+    for (int i = 0; i < numVertices; i++) {
+        ArrayList<Integer> n1 = adjacencyList.get(i);
+        if (n1.size() < 2) {
+            continue;
+        } else {
+            Set<Integer> hashSet = new HashSet<Integer> (n1);
+            for (int j : n1) {
+                if (j > i) {
+                    ArrayList<Integer> n2 = adjacencyList.get(j);
+                    for (int k : n2) {
+                        if (k > j && hashSet.contains(k)) {
+                            ret.add(new Triangle(i,j,k));
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
 
