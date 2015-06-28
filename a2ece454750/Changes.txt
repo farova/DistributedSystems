@@ -1,0 +1,8 @@
+
+- Changed for loop to a for each loop as it is a iterator in teh background
+- removed else stamenet since code will continue if doesnt meet criteria anyways
+- changed int to Integer as the comaprison operator between is slightly more efficient
+	-> L124 prevent auto unboxing
+	-> L117 stays int because when increment Integer, new object always created, int is more efficient with incrementals
+- 
+
