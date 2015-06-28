@@ -16,6 +16,8 @@ public class TriangleCountImpl {
     private byte[] input;
     private int numCores;
 
+    ArrayList<Triangle> ret = new ArrayList<Triangle>();
+
     public TriangleCountImpl(byte[] input, int numCores) {
 	this.input = input;
 	this.numCores = numCores;
@@ -32,8 +34,7 @@ public class TriangleCountImpl {
     public List<Triangle> enumerateTriangles() throws IOException {
     	// this code is single-threaded and ignores numCores
 
-    	ArrayList<ArrayList<Integer>> adjacencyList = getAdjacencyList(input);
-    	ArrayList<Triangle> ret = new ArrayList<Triangle>();
+    	final ArrayList<ArrayList<Integer>> adjacencyList = getAdjacencyList(input);
 
         if(numCores == 1){
                 return getResultSet(0,adjacencyList.size(), adjacencyList);
@@ -44,6 +45,8 @@ public class TriangleCountImpl {
             int beginIndex;
             int endIndex = -1;
 
+            ArrayList<Thread> threads = new ArrayList<Thread>();
+
             for(int i = 0; i < numCores; i++)
             {
                 beginIndex = endIndex + 1;
@@ -51,14 +54,34 @@ public class TriangleCountImpl {
 
                 endIndex = endIndex > adjacencyList.size() ? adjacencyList.size() : endIndex;
 
-                new Runnable() {
-                    public void run() {
-                        
-                        ret.addAll(getResultSet(beginIndex, endIndex, adjacencyList));
+                final int begin = beginIndex;
+                final int end = endIndex;
 
+                Thread t = new Thread(
+                    new Runnable() {
+                        public void run() {
+                            List<Triangle> result = getResultSet(begin, end, adjacencyList);
+
+                            synchronized(result) {
+                                ret.addAll(result);
+                            }
+
+                        }
                     }
-                };
+                );
+
+                t.start();
+                threads.add(t);
             }
+
+            for(Thread t : threads) {
+                try {
+                    t.join();
+                } catch (InterruptedException e) {
+
+                }
+            }
+
         }
 
 
