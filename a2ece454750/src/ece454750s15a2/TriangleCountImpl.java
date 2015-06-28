@@ -39,10 +39,26 @@ public class TriangleCountImpl {
                 return getResultSet(0,adjacencyList.size(), adjacencyList);
         } else {
 
+            int increment = adjacencyList.size() / numCores;
 
+            int beginIndex;
+            int endIndex = -1;
 
+            for(int i = 0; i < numCores; i++)
+            {
+                beginIndex = endIndex + 1;
+                endIndex = beginIndex + increment;
 
-            //ret.addAll(result);
+                endIndex = endIndex > adjacencyList.size() : adjacencyList.size(), endIndex;
+
+                new Runnable() {
+                    public void run() {
+                        
+                        ret.addAll(getResultSet(beginIndex, endIndex, adjacencyList));
+
+                    }
+                };
+            }
         }
 
 
