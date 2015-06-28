@@ -34,104 +34,25 @@ public class TriangleCountImpl {
 
 	ArrayList<ArrayList<Integer>> adjacencyList = getAdjacencyList(input);
 	ArrayList<Triangle> ret = new ArrayList<Triangle>();
-    // left here for reference
-    /*
-	// naive triangle counting algorithm
-	int numVertices = adjacencyList.size();
-	for (int i = 0; i < numVertices; i++) {
-	    ArrayList<Integer> n1 = adjacencyList.get(i);
- 	    for (int j: n1) {
-    		ArrayList<Integer> n2 = adjacencyList.get(j);
-    		for (int k: n2) {
-    		    ArrayList<Integer> n3 = adjacencyList.get(k);
-    		    for (int l: n3) {
-        			if (i < j && j < k && l == i) {
-        			    ret.add(new Triangle(i, j, k));
-        			}
-    		    }
-    		}
-	    }
-	}
-    */
-    //right number of triangles, but slow
-    /*
-    int numVertices = adjacencyList.size();
-    for (int i = 0; i < numVertices; i++) {
-        ArrayList<Integer> n1 = adjacencyList.get(i);
+
+    int i = 0;
+    for (ArrayList<Integer> n1 : adjacencyList) {
+    	i++;
         if (n1.size() < 2) {
             continue;
-        } else {
-            for (int j : n1) {
+        }
+        Set<Integer> hashSet = new HashSet<Integer> (n1);
+        for (Integer j : n1) {
+            if (j > i) {
                 ArrayList<Integer> n2 = adjacencyList.get(j);
-                if (n2.size() < 2) {
-                    continue;
-                } else if (i < j) {
-                    for (int k : n2) {
-                        if (k == i) {
-                            continue;
-                        } else {
-                            for (int l = 0; l < n1.size(); l++) {
-                                if (k == n1.get(l)) {
-                                    if (j < k) {
-                                        ret.add(new Triangle(i,j,k));
-                                        break;
-                                    }
-                                }
-                            }
-                        }
+                for (Integer k : n2) {
+                    if (k > j && hashSet.contains(k)) {
+                        ret.add(new Triangle(i,j,k));
                     }
                 }
             }
         }
     }
-    */
-    /*
-    int numVertices = adjacencyList.size();
-    for (int i = 0; i < numVertices; i++) {
-        ArrayList<Integer> n1 = adjacencyList.get(i);
-        if (n1.size() < 2) {
-            continue;
-        } else {
-            for (int j : n1) {
-                if (i < j) {
-                    ArrayList<Integer> baseList = new ArrayList<Integer>(n1);
-                    baseList.retainAll(adjacencyList.get(j));
-                    if (baseList.size() > 0) {
-                        for (int k : baseList) {
-                            if (j < k) {
-                                ret.add(new Triangle(i,j,k));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    */
-
-    int numVertices = adjacencyList.size();
-    for (int i = 0; i < numVertices; i++) {
-        ArrayList<Integer> n1 = adjacencyList.get(i);
-        if (n1.size() < 2) {
-            continue;
-        } else {
-            Set<Integer> hashSet = new HashSet<Integer> (n1);
-            for (int j : n1) {
-                if (j > i) {
-                    ArrayList<Integer> n2 = adjacencyList.get(j);
-                    for (int k : n2) {
-                        if (k > j && hashSet.contains(k)) {
-                            ret.add(new Triangle(i,j,k));
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
-
-
 	return ret;
     }
 
