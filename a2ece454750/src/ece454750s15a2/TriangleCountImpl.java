@@ -49,7 +49,7 @@ public class TriangleCountImpl {
                 beginIndex = endIndex + 1;
                 endIndex = beginIndex + increment;
 
-                endIndex = endIndex > adjacencyList.size() : adjacencyList.size(), endIndex;
+                endIndex = endIndex > adjacencyList.size() ? adjacencyList.size() : endIndex;
 
                 new Runnable() {
                     public void run() {
