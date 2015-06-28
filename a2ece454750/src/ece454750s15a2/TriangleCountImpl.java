@@ -53,7 +53,8 @@ public class TriangleCountImpl {
 	    }
 	}
     */
-    
+    //right number of triangles, but slow
+    /*
     int numVertices = adjacencyList.size();
     for (int i = 0; i < numVertices; i++) {
         ArrayList<Integer> n1 = adjacencyList.get(i);
@@ -71,7 +72,7 @@ public class TriangleCountImpl {
                         } else {
                             for (int l = 0; l < n1.size(); l++) {
                                 if (k == n1.get(l)) {
-                                    if (i < j && j < k) {
+                                    if (j < k) {
                                         ret.add(new Triangle(i,j,k));
                                         break;
                                     }
@@ -83,6 +84,31 @@ public class TriangleCountImpl {
             }
         }
     }
+    */
+
+    int numVertices = adjacencyList.size();
+    for (int i = 0; i < numVertices; i++) {
+        ArrayList<Integer> n1 = adjacencyList.get(i);
+        if (n1.size() < 2) {
+            continue;
+        } else {
+            for (int j : n1) {
+                if (i < j) {
+                    ArrayList<Integer> baseList = new ArrayList<Integer>(n1);
+                    baseList.retainAll(adjacencyList.get(j));
+                    if (baseList.size() > 0) {
+                        for (int k : baseList) {
+                            if (j < k) {
+                                ret.add(new Triangle(i,j,k));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 
 	return ret;
     }
