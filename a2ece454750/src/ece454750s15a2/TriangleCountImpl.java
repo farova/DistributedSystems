@@ -30,31 +30,51 @@ public class TriangleCountImpl {
     }
 
     public List<Triangle> enumerateTriangles() throws IOException {
-	// this code is single-threaded and ignores numCores
+    	// this code is single-threaded and ignores numCores
 
-	ArrayList<ArrayList<Integer>> adjacencyList = getAdjacencyList(input);
-	ArrayList<Triangle> ret = new ArrayList<Triangle>();
+    	ArrayList<ArrayList<Integer>> adjacencyList = getAdjacencyList(input);
+    	ArrayList<Triangle> ret = new ArrayList<Triangle>();
 
-    int i = 0;
-    for (ArrayList<Integer> n1 : adjacencyList) {
-    	i++;
-        if (n1.size() < 2) {
-            continue;
+        if(numCores == 1){
+                return getResultSet(0,adjacencyList.size(), adjacencyList);
+        } else {
+
+
+
+
+            //ret.addAll(result);
         }
-        Set<Integer> hashSet = new HashSet<Integer> (n1);
-        for (Integer j : n1) {
-            if (j > i) {
-                ArrayList<Integer> n2 = adjacencyList.get(j);
-                for (Integer k : n2) {
-                    if (k > j && hashSet.contains(k)) {
-                        ret.add(new Triangle(i,j,k));
+
+
+
+    	return ret;
+    }
+
+    private ArrayList<Triangle> getResultSet(int begin, int end, ArrayList<ArrayList<Integer>> adjacencyList) {
+        ArrayList<Integer> n1;
+        ArrayList<Triangle> ret = new ArrayList<Triangle>();
+
+        for (int i = begin; i < end; i++) {
+            n1 = adjacencyList.get(i);
+            if (n1.size() < 2) {
+                continue;
+            }
+            Set<Integer> hashSet = new HashSet<Integer> (n1);
+            for (Integer j : n1) {
+                if (j > i) {
+                    ArrayList<Integer> n2 = adjacencyList.get(j);
+                    for (Integer k : n2) {
+                        if (k > j && hashSet.contains(k)) {
+                            ret.add(new Triangle(i,j,k));
+                        }
                     }
                 }
             }
         }
+
+        return ret;
     }
-	return ret;
-    }
+
 
     public ArrayList<ArrayList<Integer>> getAdjacencyList(byte[] data) throws IOException {
 	InputStream istream = new ByteArrayInputStream(data);
