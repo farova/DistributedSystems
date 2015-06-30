@@ -16,7 +16,7 @@ public class TriangleCountImpl {
     private byte[] input;
     private int numCores;
 
-    ArrayList<Triangle> ret = new ArrayList<Triangle>();
+    ArrayList<Triangle> returnTriangles = new ArrayList<Triangle>();
 
     public TriangleCountImpl(byte[] input, int numCores) {
 	this.input = input;
@@ -32,7 +32,6 @@ public class TriangleCountImpl {
     }
 
     public List<Triangle> enumerateTriangles() throws IOException {
-    	// this code is single-threaded and ignores numCores
 
     	final ArrayList<ArrayList<Integer>> adjacencyList = getAdjacencyList(input);
 
@@ -40,16 +39,16 @@ public class TriangleCountImpl {
                 return getResultSet(0,adjacencyList.size(), adjacencyList);
         } else {
 
-            int increment = adjacencyList.size() / numCores;
+            int increment = (adjacencyList.size()  / numCores) + 1;
 
             int beginIndex;
-            int endIndex = -1;
+            int endIndex = 0;
 
             ArrayList<Thread> threads = new ArrayList<Thread>();
 
             for(int i = 0; i < numCores; i++)
             {
-                beginIndex = endIndex + 1;
+                beginIndex = endIndex;
                 endIndex = beginIndex + increment;
 
                 endIndex = endIndex > adjacencyList.size() ? adjacencyList.size() : endIndex;
@@ -63,7 +62,7 @@ public class TriangleCountImpl {
                             List<Triangle> result = getResultSet(begin, end, adjacencyList);
 
                             synchronized(result) {
-                                ret.addAll(result);
+                                returnTriangles.addAll(result);
                             }
 
                         }
@@ -86,7 +85,7 @@ public class TriangleCountImpl {
 
 
 
-    	return ret;
+    	return returnTriangles;
     }
 
     private ArrayList<Triangle> getResultSet(int begin, int end, ArrayList<ArrayList<Integer>> adjacencyList) {

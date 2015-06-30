@@ -26,13 +26,46 @@
 
   <target name="test" depends="a2" />
 
-  <target name="a2" description="Run the solution" depends="compile">
+  <target name="a2" description="Build the solution" depends="compile">
     <jar jarfile="a2.jar" basedir="${build}"/>
+  </target>
+
+  <target name="Test1" description="Run the solution" depends="compile">
     <sequential>
       <echo>A2 test</echo>
       <java classname="ece454750s15a2.TriangleCount"
             classpathref="a2.classpath" failonerror="true">
         <arg line="-ncores 1 -if Graphs/graph100K_C.txt -of output.txt"/>
+      </java>
+    </sequential>
+  </target>
+
+  <target name="Test2" description="Run the solution" depends="compile">
+    <sequential>
+      <echo>A2 test</echo>
+      <java classname="ece454750s15a2.TriangleCount"
+            classpathref="a2.classpath" failonerror="true">
+        <arg line="-ncores 2 -if Graphs/graph100K_C.txt -of output.txt"/>
+      </java>
+    </sequential>
+  </target>
+
+  <target name="Test3" description="Run the solution" depends="compile">
+    <sequential>
+      <echo>A2 test</echo>
+      <java classname="ece454750s15a2.TriangleCount"
+            classpathref="a2.classpath" failonerror="true">
+        <arg line="-ncores 3 -if Graphs/graph100K_C.txt -of output.txt"/>
+      </java>
+    </sequential>
+  </target>
+
+  <target name="Test4" description="Run the solution" depends="compile">
+    <sequential>
+      <echo>A2 test</echo>
+      <java classname="ece454750s15a2.TriangleCount"
+            classpathref="a2.classpath" failonerror="true">
+        <arg line="-ncores 4 -if Graphs/graph100K_C.txt -of output.txt"/>
       </java>
     </sequential>
   </target>
