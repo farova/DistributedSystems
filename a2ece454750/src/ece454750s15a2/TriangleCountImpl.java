@@ -36,7 +36,7 @@ public class TriangleCountImpl {
     	final ArrayList<ArrayList<Integer>> adjacencyList = getAdjacencyList(input);
 
         if(numCores == 1){
-                return getResultSet(0,adjacencyList.size(), adjacencyList);
+                getResultSet(0,adjacencyList.size(), adjacencyList);
         } else {
 
             int increment = (adjacencyList.size()  / numCores) + 1;
@@ -59,11 +59,13 @@ public class TriangleCountImpl {
                 Thread t = new Thread(
                     new Runnable() {
                         public void run() {
-                            List<Triangle> result = getResultSet(begin, end, adjacencyList);
+                            //List<Triangle> result = getResultSet(begin, end, adjacencyList);
 
-                            synchronized(result) {
+                            getResultSet(begin, end, adjacencyList);
+
+                            /*synchronized(result) {
                                 returnTriangles.addAll(result);
-                            }
+                            }*/
 
                         }
                     }
@@ -88,9 +90,10 @@ public class TriangleCountImpl {
     	return returnTriangles;
     }
 
-    private ArrayList<Triangle> getResultSet(int begin, int end, ArrayList<ArrayList<Integer>> adjacencyList) {
+    private void getResultSet(int begin, int end, ArrayList<ArrayList<Integer>> adjacencyList) {
         ArrayList<Integer> n1;
-        ArrayList<Triangle> ret = new ArrayList<Triangle>();
+        boolean pass;
+        //ArrayList<Triangle> ret = new ArrayList<Triangle>();
 
         for (int i = begin; i < end; i++) {
             n1 = adjacencyList.get(i);
@@ -103,14 +106,20 @@ public class TriangleCountImpl {
                     ArrayList<Integer> n2 = adjacencyList.get(j);
                     for (Integer k : n2) {
                         if (k > j && hashSet.contains(k)) {
-                            ret.add(new Triangle(i,j,k));
+                            //ret.add(new Triangle(i,j,k));
+
+                            do { 
+                                pass = returnTriangles.add(new Triangle(i,j,k));
+                            } while( !pass );
+
+
                         }
                     }
                 }
             }
         }
 
-        return ret;
+        //return ret;
     }
 
 
