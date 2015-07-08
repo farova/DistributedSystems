@@ -108,9 +108,9 @@ public class TriangleCountImpl {
                         if (k > j && hashSet.contains(k)) {
                             //ret.add(new Triangle(i,j,k));
 
-                            do { 
-                                pass = returnTriangles.add(new Triangle(i,j,k));
-                            } while( !pass );
+                            synchronized(returnTriangles) { 
+                                returnTriangles.add(new Triangle(i,j,k));
+                            }
 
 
                         }
