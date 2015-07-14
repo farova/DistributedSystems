@@ -29,8 +29,8 @@ public class Part1 {
 
       StringTokenizer itr = new StringTokenizer(value.toString(),",");
       Integer entryNumber = 0;
-      Double tokenValue;
-      Double maxValue = 0.0;
+      double tokenValue;
+      double maxValue = 0.0;
 
       while (itr.hasMoreTokens()) 
       {
@@ -43,15 +43,16 @@ public class Part1 {
         tokenValue = Double.parseDouble(itr.nextToken());
 
         if(tokenValue == 0.0) {
+          entryNumber++;
           continue;
         }
 
         if(tokenValue > maxValue) {
           genes.clear();
           maxValue = tokenValue;
-          genes.add(entryNumber);
         }
-        else if(tokenValue == maxValue) {
+        
+        if(tokenValue == maxValue) {
           genes.add(entryNumber);
         }
 
