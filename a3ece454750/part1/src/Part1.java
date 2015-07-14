@@ -61,8 +61,12 @@ public class Part1 {
 
       String tokenStringSet = "";
 
-      for(Integer gene : genes) {
-        tokenStringSet += "gene_" + gene + ",";
+      for(int i = 0; i < genes.size(); i++) {
+        tokenStringSet += "gene_" + genes.get(i);
+
+        if(i < (genes.size()-1)) {
+          tokenStringSet += ",";
+        }
       }
 
       geneSet.set(tokenStringSet);
