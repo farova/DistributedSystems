@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -16,66 +17,75 @@ import org.apache.hadoop.util.GenericOptionsParser;
 
 public class Part2 {
 
-  public static class Part2Mapper extends Mapper<Object, Text, Text, Text> 
+  public static class Part2Mapper extends Mapper<Object, Text, Text, IntWritable> 
   {
 
-    private Text sampleID = new Text();
-    private Text geneSet = new Text();
+    private Text geneID = new Text();
+    private IntWritable count1 = new IntWritable();
+    private IntWritable count0 = new IntWritable();
 
     public void map(Object key, Text value, Context context ) throws IOException, InterruptedException 
     {
-      /*
+      count1.set(1);
+      count0.set(0);
+
       ArrayList<Integer> genes = new ArrayList<Integer>();
 
       StringTokenizer itr = new StringTokenizer(value.toString(),",");
-      Integer entryNumber = 0;
+      Integer geneCounter = 0;
       double tokenValue;
-      double maxValue = 0.0;
 
       while (itr.hasMoreTokens()) 
       {
-        if (entryNumber == 0) {
-          sampleID.set(itr.nextToken());
-          entryNumber++;
+        if (geneCounter == 0) {
+          itr.nextToken();
+          geneCounter++;
           continue;
         }
 
         tokenValue = Double.parseDouble(itr.nextToken());
 
-        if(tokenValue == 0.0) {
-          entryNumber++;
-          continue;
+        geneID.set("gene_"+geneCounter);
+
+        if (tokenValue > 0.5) {
+          context.write(geneID, count1);
+        } else {
+          context.write(geneID, count0);
         }
 
-        if(tokenValue > maxValue) {
-          genes.clear();
-          maxValue = tokenValue;
-        }
-        
-        if(tokenValue == maxValue) {
-          genes.add(entryNumber);
-        }
-
-        entryNumber++;
+        geneCounter++;
       }
 
-      String tokenStringSet = "";
-
-      for(int i = 0; i < genes.size(); i++) {
-        tokenStringSet += "gene_" + genes.get(i);
-
-        if(i < (genes.size()-1)) {
-          tokenStringSet += ",";
-        }
-      }
-
-      geneSet.set(tokenStringSet);
-
-      context.write(sampleID, geneSet);
-      */
     }
 
   }
+
+
+  public static class Part2Reducer extends Reducer<Text,IntWritable,Text,DoubleWritable> 
+  {
+    
+    private DoubleWritable result = new DoubleWritable();
+
+    public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException 
+    {
+
+      int totalCount = 0;
+      int relatedCount = 0;
+
+      for (IntWritable val : values) {
+        relatedCount += val.get();
+        totalCount++;
+      }
+
+      double relation = (double) relatedCount / totalCount;
+
+      result.set(relation);
+      context.write(key, result);
+
+    }
+
+  }
+
 
   public static void main(String[] args) throws Exception 
   {
@@ -92,10 +102,9 @@ public class Part2 {
     Job job = new Job(conf, "Part2");
     job.setJarByClass(Part2.class);
     job.setMapperClass(Part2Mapper.class);
-    // Set no of reducers to 0
-    job.setNumReduceTasks(0);
+    job.setReducerClass(Part2Reducer.class);
     job.setOutputKeyClass(Text.class);
-    job.setOutputValueClass(Text.class);
+    job.setOutputValueClass(IntWritable.class);
 
     FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
     FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
