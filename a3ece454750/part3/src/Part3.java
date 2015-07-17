@@ -101,7 +101,12 @@ public class Part3 {
             continue;
           }
           
-          sampleID.set(gene1.sampleID + "," + gene2.sampleID);
+          if(gene1.sampleID.compareTo(gene2.sampleID) < 0) {
+            sampleID.set(gene1.sampleID + "," + gene2.sampleID);
+          } else {
+            sampleID.set(gene2.sampleID + "," + gene1.sampleID);
+          }
+
           result.set(gene1.geneValue * gene2.geneValue);
 
           context.write(sampleID, result);
@@ -123,31 +128,11 @@ public class Part3 {
     {
 
       StringTokenizer itr1 = new StringTokenizer(value.toString(),",");
-      double tokenValue;
-      String sampleID1 = "";
-      String sampleID2 = "";
-      int counter = 0;
 
-      while (itr1.hasMoreTokens()) 
-      {
-        if (counter == 0) {
-          sampleID1 = itr1.nextToken();
-          counter++;
-          continue;
-        } 
-        else if (counter == 1) {
-          sampleID2 = itr1.nextToken();
-          counter++;
-          continue;
-        }
+      sampleIDs.set(itr1.nextToken()+","+itr1.nextToken());
+      result.set(Double.parseDouble(itr1.nextToken()));
 
-        result.set(Double.parseDouble(itr1.nextToken()));
-        sampleIDs.set(sampleID1+","+sampleID2);
-
-        context.write(sampleIDs, result);
-        
-        counter++;
-      }
+      context.write(sampleIDs, result);
     }
 
   }
