@@ -10,6 +10,8 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.chain.ChainMapper;
@@ -111,19 +113,66 @@ public class Part3 {
   }
 
 
-  public static class Part3Combiner extends Reducer<Text, GeneWritable,Text, DoubleWritable> 
+  public static class Part3Mapper2 extends Mapper<Object, Text, Text, DoubleWritable> 
   {
   
+    private Text sampleIDs = new Text();
+    private DoubleWritable result = new DoubleWritable();
 
-    public void reduce(Text key, Iterable<GeneWritable> values, Context context) throws IOException, InterruptedException 
+    public void map(Object key, Text value, Context context ) throws IOException, InterruptedException 
     {
 
-      
+      StringTokenizer itr1 = new StringTokenizer(value.toString(),",");
+      double tokenValue;
+      String sampleID1 = "";
+      String sampleID2 = "";
+      int counter = 0;
 
+      while (itr1.hasMoreTokens()) 
+      {
+        if (counter == 0) {
+          sampleID1 = itr1.nextToken();
+          counter++;
+          continue;
+        } 
+        else if (counter == 1) {
+          sampleID2 = itr1.nextToken();
+          counter++;
+          continue;
+        }
+
+        result.set(Double.parseDouble(itr1.nextToken()));
+        sampleIDs.set(sampleID1+","+sampleID2);
+
+        context.write(sampleIDs, result);
+        
+        counter++;
+      }
     }
 
   }
 
+  public static class Part3Reducer2 extends Reducer<Text, DoubleWritable,Text, DoubleWritable> 
+  {
+    
+    private Text sampleID = new Text();
+    private DoubleWritable result = new DoubleWritable();
+
+    public void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException 
+    {
+      double sum = 0;
+
+      for (DoubleWritable val : values) {
+        sum += val.get();
+      }
+
+      result.set(sum);
+
+      context.write(key, result);
+    }
+  }
+
+  private static final String OUTPUT_PATH = "intermediate_output";
 
   public static void main(String[] args) throws Exception 
   {
@@ -137,18 +186,37 @@ public class Part3 {
       System.exit(2);
     }
 
-    Job job = new Job(conf, "Part3");
+
+    Job job = new Job(conf, "Part3_1");
     job.setJarByClass(Part3.class);
     job.setMapperClass(Part3Mapper.class);
-    job.setCombinerClass(Part3Combiner.class);
     job.setReducerClass(Part3Reducer.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(GeneWritable.class);
 
     FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
-    FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
+    FileOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
 
-    System.exit(job.waitForCompletion(true) ? 0 : 1);
+    job.waitForCompletion(true);
+
+
+    Job job2 = new Job(conf, "Part3_2");
+    job2.setJarByClass(Part3.class);
+
+    job2.setMapperClass(Part3Mapper2.class);
+    job2.setReducerClass(Part3Reducer2.class);
+
+    job2.setOutputKeyClass(Text.class);
+    job2.setOutputValueClass(DoubleWritable.class);
+
+    job2.setInputFormatClass(TextInputFormat.class);
+    job2.setOutputFormatClass(TextOutputFormat.class);
+
+    TextInputFormat.addInputPath(job2, new Path(OUTPUT_PATH));
+    TextOutputFormat.setOutputPath(job2, new Path(otherArgs[1]));
+
+
+    System.exit(job2.waitForCompletion(true) ? 0 : 1);
   }
 
 }
