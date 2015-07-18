@@ -1,9 +1,12 @@
 import java.io.IOException;
+import java.io.File;
 import java.util.StringTokenizer;
 import java.util.ArrayList;
 
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.DoubleWritable;
@@ -171,7 +174,9 @@ public class Part3 {
       System.exit(2);
     }
 
+    Path temporaryOutputPath = new Path(OUTPUT_PATH);
 
+    /* Job 1 */
     Job job = new Job(conf, "Part3_1");
     job.setJarByClass(Part3.class);
     job.setMapperClass(Part3Mapper.class);
@@ -180,11 +185,11 @@ public class Part3 {
     job.setOutputValueClass(GeneWritable.class);
 
     FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
-    FileOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
+    FileOutputFormat.setOutputPath(job, temporaryOutputPath);
 
     job.waitForCompletion(true);
 
-
+    /* Job 2 */
     Job job2 = new Job(conf, "Part3_2");
     job2.setJarByClass(Part3.class);
 
@@ -197,11 +202,15 @@ public class Part3 {
     job2.setInputFormatClass(TextInputFormat.class);
     job2.setOutputFormatClass(TextOutputFormat.class);
 
-    TextInputFormat.addInputPath(job2, new Path(OUTPUT_PATH));
+    TextInputFormat.addInputPath(job2, temporaryOutputPath);
     TextOutputFormat.setOutputPath(job2, new Path(otherArgs[1]));
 
+    job2.waitForCompletion(true);
 
-    System.exit(job2.waitForCompletion(true) ? 0 : 1);
+    // Remove temporary folder
+    FileSystem fs = FileSystem.get(conf);
+    fs.delete(temporaryOutputPath);
+
   }
 
 }
