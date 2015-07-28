@@ -8,5 +8,4 @@ geneRows = FOREACH parsedGenes GENERATE FLATTEN(genes);
 geneBooled = FOREACH geneRows GENERATE $0, part4.geneBooler($1);
 geneGrouped = GROUP geneBooled by $0;
 geneSum = FOREACH geneGrouped GENERATE $0, (float)SUM(geneBooled.$1)/(float)COUNT(geneBooled.$1);
-bracketRemove = FOREACH geneSum GENERATE FLATTEN($0);
-STORE bracketRemove INTO '$output' USING PigStorage(',');
+STORE geneSum INTO '$output' USING PigStorage(',');
