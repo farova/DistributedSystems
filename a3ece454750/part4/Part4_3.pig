@@ -6,4 +6,4 @@ crossSamples = CROSS genes, genes_2;
 crossSimilarity = FOREACH crossSamples GENERATE part4.geneSimilarity($0 ..) AS genes:tuple();
 crossOutput = FILTER crossSimilarity BY (double)$0.$2 > 0;
 bracketRemove = FOREACH crossOutput GENERATE FLATTEN($0);
-STORE crossOutput INTO '$output' USING PigStorage(',');
+STORE bracketRemove INTO '$output' USING PigStorage(',');
